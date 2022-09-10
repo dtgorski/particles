@@ -1,0 +1,112 @@
+$color-pri: #ddd;
+$color-sec: #4db6ac;
+$color-tri: #80cbc4;
+$color-err: #d00;
+$color-hover: #548686;
+$color-active: #80cbc4;
+
+$bg-color-0: #000;
+$bg-color-1: #111;
+$bg-color-2: #222;
+$bg-color-3: #333;
+$bg-color-4: #444;
+
+$border-width: 1px;
+$border-radius: 4px;
+$border-color-pri: #111;
+$border-color-sec: #444;
+
+%text-shadow { text-shadow: 1px 1px $bg-color-0; }
+%user-select-none { user-select: none; }
+
+%inset {
+    border-style: solid;
+    border-width: $border-width;
+    border-radius: $border-radius;
+    border-top-color: $border-color-pri;
+    border-right-color: $border-color-sec;
+    border-bottom-color: $border-color-sec;
+    border-left-color: $border-color-pri;
+}
+
+%outset {
+    border-style: solid;
+    border-width: $border-width;
+    border-radius: $border-radius;
+    border-top-color: $border-color-sec;
+    border-right-color: $border-color-pri;
+    border-bottom-color: $border-color-pri;
+    border-left-color: $border-color-sec;
+}
+
+::-webkit-scrollbar { width: 8px; height: 10px; }
+::-webkit-scrollbar-button { width: 0; height: 0; }
+::-webkit-scrollbar-thumb { background: $border-color-sec; border: 0; border-radius: 16px; }
+::-webkit-scrollbar-thumb:hover { background: $color-sec; }
+::-webkit-scrollbar-thumb:active { background: $color-active; }
+::-webkit-scrollbar-track { background: transparent; border: 0; }
+::-webkit-scrollbar-corner { background: transparent; }
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    color: $color-pri;
+    background-image: radial-gradient(#888 30%, black 100%);
+
+    * { box-sizing: border-box;}
+}
+
+fieldset {
+    @extend %outset;
+    margin-bottom: 12px;
+    background-color: $bg-color-3;
+
+    legend {
+        border-radius: 4px;
+        padding: 2px 8px;
+        color: $color-sec;
+        font-size: smaller;
+        background-color: $bg-color-2;
+        @extend %user-select-none;
+        @extend %text-shadow;
+    }
+}
+
+button.icon-button, button.action-button {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 2px;
+    color: $color-pri;
+    background-color: transparent;
+
+    &:hover {
+        background-color: $color-hover;
+    }
+    &:active {
+        background-color: $color-active;
+        > svg { color: #fff; }
+    }
+}
+
+button.icon-button {
+    > svg {
+        height: 24px;
+        width: 24px;
+        filter: drop-shadow(1px 1px 0 $bg-color-0);
+    }
+}
+
+button.action-button {
+    > svg {
+        height: 32px;
+        width: 32px;
+        filter: drop-shadow(1px 1px 0 $bg-color-0);
+    }
+}
+
+.disabled {
+    @extend %user-select-none;
+    pointer-events: none;
+    opacity: 0.5;
+}
