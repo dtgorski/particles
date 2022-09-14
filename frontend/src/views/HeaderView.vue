@@ -7,19 +7,13 @@
             <button class="action-button" title="Play" @click="start" v-show="running === false">
                 <Icon icon="mdi:play" />
             </button>
-            <button class="action-button" title="Restart" @click="restartEngine">
+            <button class="action-button" title="Restart" @click="restart">
                 <Icon icon="mdi:reload" />
             </button>
-            <!--            <button class="action-button" title="Import model">-->
-            <!--                <Icon icon="mdi:import" @click="importModel"/>-->
-            <!--            </button>-->
-            <!--            <button class="action-button" title="Export model">-->
-            <!--                <Icon icon="mdi:export" @click="exportModel" />-->
-            <!--            </button>-->
         </div>
         <div id="logo">
             <div><img src="@/assets/logo.png" alt="particles" width="132" height="50" /></div>
-            <div>particles <span>v1</span></div>
+            <div>particles</div>
         </div>
     </div>
 </template>
@@ -31,41 +25,11 @@
     import { defineComponent } from "vue";
     import { Driver } from "@/Driver";
     import { Engine } from "@/Engine";
-    import { model } from "@/Model";
+    import { model } from "@/model";
 
-    declare global {
-        interface Window {engine: Engine;}
-    }
-
-    export default defineComponent({
-        name: "HeaderView",
-        components: { Icon },
-        methods: {
-            running: (): boolean => {
-                return window.engine?.running();
-            },
-            start: () => {
-                window.engine?.start();
-            },
-            stop: () => {
-                window.engine?.stop();
-            },
-            restartEngine: () => {
-                window.engine?.stop();
-                window.engine = createEngine();
-                window.engine.start();
-            },
-            importModel: () => { /**/ },
-            exportModel: () => { /**/ },
-        },
-        mounted() {
-            window.engine = createEngine();
-            window.engine.start();
-        },
-        setup: () => {
-            return model;
-        },
-    });
+    // FIXME
+    declare global { interface Window {engine: Engine;} }
+    const sim: Window = window;
 
     const createEngine = (): Engine => {
         const canvas = document.getElementById("canvas");
@@ -76,6 +40,23 @@
 
         return new Engine(elm, driver);
     };
+
+    const start = () => { sim.engine?.start(); };
+    const stop = () => { sim.engine?.stop(); };
+    const running = (): boolean => { return sim.engine?.running(); };
+    const restart = () => {
+        stop();
+        sim.engine = createEngine();
+        start();
+    };
+
+    export default defineComponent({
+        name: "HeaderView",
+        components: { Icon },
+        methods: { start, stop, running, restart },
+        mounted() { restart(); },
+        setup: () => { return model; },
+    });
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

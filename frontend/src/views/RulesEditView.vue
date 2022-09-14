@@ -4,7 +4,10 @@
         <div>
             <div></div>
             <div v-show="rules.length">Group A</div>
-            <div v-show="rules.length">G force</div>
+            <div></div>
+            <div></div>
+            <div v-show="rules.length">Gravity</div>
+            <div></div>
             <div v-show="rules.length">Group B</div>
             <div :class="hasActiveGroups(groups) ? '' : 'disabled'">
                 <button
@@ -15,37 +18,56 @@
                 </button>
             </div>
         </div>
-        <div v-for="(rule, ruleIndex) in rules" :key=rule.id>
+        <div v-for="(rule, i) in rules" :key=rule.id>
             <div>
                 <button
                     title="On/Off"
                     class="icon-button"
-                    @click="toggle(ruleIndex)">
+                    @click="toggle(i)">
                     <Icon icon="mdi:checkbox-marked-outline" v-if="rule.active" />
                     <Icon icon="mdi:checkbox-blank-outline" v-else />
                 </button>
             </div>
             <div :class="rule.active ? '' : 'disabled'">
-                <select @change="select(ruleIndex, $event, 'A')">
+                <select @change="select(i, $event, 'A')">
                     <option
                         v-for="group in groups"
                         :key="rule.id + group.id + 'A'"
-                        :selected="rule.groupA === group.id"
+                        :selected="rule.actorA.groupId === group.id"
                         :disabled=!group.active
                         :value=group.id
                     >{{ group.label }}
                     </option>
                 </select>
             </div>
-            <div :class="rule.active ? '' : 'disabled'">
-                <input type="number" v-model=rule.repulse step="0.01" min="-1" max="1">
+            <div>
+                <Icon icon="mdi:checkbox-blank-circle"
+                      :style="{ color: getGroup(rule.actorA.groupId).color, width: getGroup(rule.actorA.groupId).size * 2 }"
+                />
+            </div>
+            <div>
+                <button
+                    tabindex="-1"
+                    title="Flip sign"
+                    class="icon-button"
+                    @click="flip(i)">
+                    <Icon icon="mdi:plus-minus-variant" />
+                </button>
+            </div>
+            <div>
+                <input type="number" v-model=rule.gravity step="0.01" min="-1" max="1">
+            </div>
+            <div>
+                <Icon icon="mdi:checkbox-blank-circle"
+                      :style="{ color: getGroup(rule.actorB.groupId).color, width: getGroup(rule.actorB.groupId).size * 2 }"
+                />
             </div>
             <div :class="rule.active ? '' : 'disabled'">
-                <select @change="select(ruleIndex, $event, 'B')">
+                <select @change="select(i, $event, 'B')">
                     <option
                         v-for="group in groups"
                         :key="rule.id + group.id + 'B'"
-                        :selected="rule.groupB === group.id"
+                        :selected="rule.actorB.groupId === group.id"
                         :disabled=!group.active
                         :value=group.id
                     >{{ group.label }}
@@ -56,8 +78,8 @@
                 <button
                     title="Remove rule"
                     class="icon-button"
-                    @click="remove(ruleIndex)">
-                    <Icon icon="mdi:delete" />
+                    @click="remove(i)">
+                    <Icon icon="mdi:delete-outline" />
                 </button>
             </div>
         </div>
@@ -69,24 +91,29 @@
 <script lang="ts">
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
-    import { createRandomRule, getGroupById, getRuleGroupIds, Group, hasActiveGroups, model } from "@/Model";
+    import { model } from "@/model";
+    import { GroupCtx, Group, GroupId } from "@/model/Group";
+    import { RuleCtx } from "@/model/Rule";
 
     export default defineComponent({
         name: "RulesEditView",
         components: { Icon },
         methods: {
             append: () => {
-                const rule = createRandomRule(model.groups);
+                const rule = RuleCtx.createRandomRule(model.groups);
                 rule ? model.rules.push(rule) : null;
             },
             remove: (index: number) => {
                 model.rules.splice(index, 1);
             },
+            flip: (index: number) => {
+                model.rules[index].gravity *= -1;
+            },
             toggle: (index: number) => {
                 if (!model.rules[index].active) {
-                    const [ A, B ] = getRuleGroupIds(model.rules[index]);
-                    const groupA = getGroupById(model.groups, A);
-                    const groupB = getGroupById(model.groups, B);
+                    const [ a, b ] = RuleCtx.getActors(model.rules[index]);
+                    const groupA = GroupCtx.getGroupById(model.groups, a.groupId);
+                    const groupB = GroupCtx.getGroupById(model.groups, b.groupId);
 
                     if (groupA?.active && groupB?.active) {
                         model.rules[index].active = true;
@@ -96,19 +123,23 @@
                 model.rules[index].active = false;
             },
             select: (index: number, ev: Event, groupName: string) => {
-                let value: string = (ev.target as HTMLSelectElement).value;
-                groupName == "A" ? model.rules[index].groupA = value : null;
-                groupName == "B" ? model.rules[index].groupB = value : null;
+                const elm = (ev.target as HTMLSelectElement);
+                elm.blur();
+
+                const rule = model.rules[index];
+                groupName == "A"
+                    ? rule.actorA.groupId = elm.value
+                    : rule.actorB.groupId = elm.value;
             },
             hasActiveGroups: (groups: Group[]): boolean => {
-                return hasActiveGroups(groups);
+                return GroupCtx.hasActiveGroups(groups);
             },
+            getGroup: (groupId: GroupId): Group | undefined => {
+                return GroupCtx.getGroupById(model.groups, groupId);
+            }
         },
         setup: () => {
-            return {
-                groups: model.groups,
-                rules: model.rules
-            };
+            return model;
         },
     });
 </script>
@@ -119,10 +150,7 @@
 @import "@/assets/css.scss";
 
 fieldset {
-    width: 410px;
-
     > div {
-        gap: 4px;
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -133,12 +161,35 @@ fieldset {
             text-align: center;
             @extend %user-select-none;
             @extend %text-shadow;
+            margin: 0 2px;
         }
-        > div:nth-child(1) { width: 24px; }
-        > div:nth-child(2) { width: 128px; }
-        > div:nth-child(3) { width: 64px; }
-        > div:nth-child(4) { width: 128px; }
-        > div:nth-child(5) { width: 24px; }
+
+        > div:nth-child(1) { flex: 0; min-width: 24px; margin-left: 0; }
+        > div:nth-child(2) { flex: 8; min-width: 96px; }
+        > div:nth-child(3) { flex: 0; min-width: 24px; svg { max-width: 24px; } }
+        > div:nth-child(4) {
+            flex: 0;
+            min-width: 24px;
+            button {
+                &:hover, &:active, &:focus-visible {
+                    background: transparent;
+                    outline-style: none !important;
+                }
+            }
+            svg {
+                height: 16px;
+                width: 16px;
+                transform: translateX(5px)
+            }
+        }
+        > div:nth-child(5) {
+            flex: 8;
+            margin-left: -26px;
+            input { padding-left: 26px !important; }
+        }
+        > div:nth-child(6) { flex: 0; min-width: 24px; svg { max-width: 24px; } }
+        > div:nth-child(7) { flex: 8; min-width: 96px; }
+        > div:nth-child(8) { flex: 0; min-width: 24px; margin-right: 0;}
     }
 
     option {

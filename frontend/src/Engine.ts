@@ -1,5 +1,4 @@
 import { Driver } from "@/Driver";
-import { GroupId } from "@/Model";
 
 export class Engine {
 
@@ -47,23 +46,18 @@ export class Engine {
     private updateCanvas(): void {
         this.ctx.clearRect(0, 0, this.w, this.h);
 
-        const drawDataMap = this.driver.getDrawDataMap();
-        const groupIds = Object.keys(drawDataMap);
+        const drawGroupMap = this.driver.getDrawGroupMap();
+        const groupIds = Object.keys(drawGroupMap);
 
         for (let i = 0; i < groupIds.length; i++) {
-            const groupId = groupIds[i] as GroupId;
+            const groupId = groupIds[i];
 
-            const drawData = drawDataMap[groupId];
+            const drawData = drawGroupMap[groupId];
             if (!drawData.active) { continue; }
 
             for (let j = 0; j < drawData.particles.length; j++) {
-                const particle = drawData.particles[j];
-                this.drawParticle(
-                    particle.x,
-                    particle.y,
-                    drawData.size,
-                    drawData.color
-                );
+                const p = drawData.particles[j];
+                this.drawParticle(p.x, p.y, drawData.size, drawData.color);
             }
         }
         if (this.r) {

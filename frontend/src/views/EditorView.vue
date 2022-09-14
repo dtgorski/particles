@@ -1,5 +1,6 @@
 <template>
     <div id="editor-view">
+        <DistanceEditView />
         <GroupsEditView />
         <RulesEditView />
     </div>
@@ -11,10 +12,15 @@
     import { defineComponent } from "vue";
     import GroupsEditView from "@/views/GroupsEditView.vue";
     import RulesEditView from "@/views/RulesEditView.vue";
+    import DistanceEditView from "@/views/DistanceEditView.vue";
 
     export default defineComponent({
         name: "EditorView",
-        components: { GroupsEditView, RulesEditView }
+        components: {
+            DistanceEditView,
+            GroupsEditView,
+            RulesEditView,
+        }
     });
 </script>
 
@@ -24,6 +30,7 @@
 @import "@/assets/css.scss";
 
 #editor-view {
+    width: 440px;
     overflow-x: hidden;
     overflow-y: auto;
 
@@ -37,11 +44,16 @@
         background-color: $bg-color-4;
         @extend %text-shadow;
     }
-    input[type=number] {
-        text-align: center;
+    input {
+        @extend %inset;
     }
     select {
+        @extend %outset;
         padding: 2px;
+    }
+
+    input[type=number] {
+        text-align: center;
     }
 }
 </style>

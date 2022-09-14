@@ -1,4 +1,7 @@
-import { getGroupById, Group, GroupId, Model, randomIntExclusive } from "@/Model";
+import { Model } from "@/model";
+import { toRaw } from "vue";
+import { randIntExc } from "@/random";
+import { GroupCtx } from "@/model/Group";
 
 export type Particle = {
     x: number
@@ -7,9 +10,9 @@ export type Particle = {
     vy: number
 }
 
-export type DrawDataMap = Record<GroupId, DrawData>
+export type DrawGroupMap = Record<string, DrawGroup>
 
-export type DrawData = {
+export type DrawGroup = {
     active: boolean
     mass: number
     size: number
@@ -19,25 +22,35 @@ export type DrawData = {
 }
 
 export class Driver {
-    private drawDataMap: DrawDataMap = {}
+    private drawGroupMap: DrawGroupMap = {}
 
     constructor(
         readonly model: Model,
-        readonly w: number = 1024,
-        readonly h: number = 1024
+        readonly w = 1024,
+        readonly h = 1024
     ) {}
 
     getModel(): Model {
         return this.model;
     }
 
+    getDrawGroupMap(): DrawGroupMap {
+        return this.drawGroupMap;
+    }
+
+    commit(updateCanvas: () => void): void {
+        this.update();
+        requestAnimationFrame(updateCanvas);
+    }
+
     update(): void {
-        const groupIds = Object.keys(this.drawDataMap);
+        const model = toRaw(this.model);
+        const groupIds = Object.keys(this.drawGroupMap);
 
         // Remove deleted groups.
         for (let i = 0; i < groupIds.length; i++) {
-            if (!getGroupById(this.model.groups, groupIds[i])) {
-                delete (this.drawDataMap[groupIds[i]]);
+            if (!GroupCtx.getGroupById(model.groups, groupIds[i])) {
+                delete (this.drawGroupMap[groupIds[i]]);
                 groupIds.splice(i, 0);
             }
         }
@@ -45,36 +58,41 @@ export class Driver {
         // Check modified group properties.
         for (let i = 0; i < groupIds.length; i++) {
             const groupId = groupIds[i];
-
-            const group = getGroupById(this.model.groups, groupId);
+            const group = GroupCtx.getGroupById(model.groups, groupId);
             if (!group) { continue; }
 
-            const drawData = this.drawDataMap[groupId];
-            drawData.active = group.active;
-            drawData.mass = group.mass;
-            drawData.size = group.size;
-            drawData.color = group.color;
+            const drawGroup = this.drawGroupMap[groupId];
 
-            if (group.count > drawData.particleCount) {
-            //     // Add more particles
+            drawGroup.active = group.active;
+            drawGroup.mass = group.mass;
+            drawGroup.size = group.size;
+            drawGroup.color = group.color;
+
+            // Add missing particles.
+            const diff = group.count - drawGroup.particleCount;
+            if (diff > 0) {
+                for (let i = 0; i < diff; i++) { drawGroup.particles.push(this.createParticle()); }
+                drawGroup.particleCount = group.count;
             }
-            if (group.count < drawData.particleCount) {
-                 // Remove particles
+            // Remove superfluous particles.
+            if (diff < 0) {
+                drawGroup.particles.splice(0, -diff);
+                drawGroup.particleCount = group.count;
             }
         }
 
         // Check if all active groups have particles.
-        for (let i = 0; i < this.model.groups.length; i++) {
+        for (let i = 0; i < model.groups.length; i++) {
 
-            const group = this.model.groups[i];
+            const group = model.groups[i];
             if (!group.active) { continue; }
-            if (this.drawDataMap[group.id]) { continue; }
+            if (this.drawGroupMap[group.id]) { continue; }
 
             const particles = [];
             for (let j = 0; j < group.count; j++) {
-                particles.push(this.createParticle(group));
+                particles.push(this.createParticle());
             }
-            this.drawDataMap[group.id] = <DrawData>{
+            this.drawGroupMap[group.id] = <DrawGroup>{
                 active: group.active,
                 mass: group.mass,
                 size: group.size,
@@ -84,83 +102,74 @@ export class Driver {
             };
         }
 
-        this.applyRules();
+        this.applyRules(model.distance);
     }
 
-    getDrawDataMap(): DrawDataMap {
-        return this.drawDataMap;
-    }
-
-    commit(updateCanvas: () => void): void {
-        this.update();
-        requestAnimationFrame(updateCanvas);
-    }
-
-    private createParticle(group: Group): Particle {
-        return {
-            x: randomIntExclusive(0, this.w),
-            y: randomIntExclusive(0, this.h),
-            vx: 0,
-            vy: 0,
-        };
-    }
-
-    private applyRules(): void {
-        const rules = this.model.rules;
+    private applyRules(distance: number): void {
+        const rules = toRaw(this.model.rules);
 
         for (let i = 0; i < rules.length; i++) {
             const rule = rules[i];
             if (!rule.active) { continue; }
 
-            this.applyRule(
-                this.drawDataMap[rule.groupA],
-                this.drawDataMap[rule.groupB],
-                rule.repulse
-            );
+            const drawGroupA: DrawGroup = this.drawGroupMap[rule.actorA.groupId];
+            const drawGroupB: DrawGroup = this.drawGroupMap[rule.actorB.groupId];
+            const gravity = rule.gravity;
+
+            this.applyRule(drawGroupA, drawGroupB, gravity, distance);
         }
     }
 
-    private applyRule(data1: DrawData, data2: DrawData, g: number): void {
-        const particles1 = data1.particles;
-        const particles2 = data2.particles;
+    private applyRule(
+        drawGroupA: DrawGroup,
+        drawGroupB: DrawGroup,
+        g: number,
+        d: number
+    ): void {
+        const particlesA = drawGroupA.particles;
+        const particlesB = drawGroupB.particles;
 
-        for (let i = 0; i < particles1.length; i++) {
-            const p1 = particles1[i];
+        for (let i = 0; i < particlesA.length; i++) {
+            const pA = particlesA[i];
             let fx = 0, fy = 0;
 
-            for (let j = 0; j < particles2.length; j++) {
-                const p2 = particles2[j];
-                const dx = p1.x - p2.x;
-                const dy = p1.y - p2.y;
-                const d = Math.sqrt(dx * dx + dy * dy);
+            for (let j = 0; j < particlesB.length; j++) {
+                const pB = particlesB[j];
 
-                if (d > 0 && d < 80) {
-                    const F = (g / d) * data1.mass * data2.mass;
-                    fx += F * dx;
-                    fy += F * dy;
+                const dx = pA.x - pB.x;
+                const dy = pA.y - pB.y;
+                const r = Math.sqrt(dx * dx + dy * dy);
+
+                if (r >= 1 && r <= d) {
+                    const f = g / r;
+                    //const f = g * ((drawGroupA.mass * drawGroupB.mass) / (r*r));
+                    fx += f * dx * 0.1;
+                    fy += f * dy * 0.1;
                 }
             }
-            if (p1.x < 0) {
-                p1.x = -p1.x;
-                p1.vx *= -0.01;
-            }
-            if (p1.x >= this.w) {
-                p1.x = 2 * this.w - p1.x;
-                p1.vx *= -0.01;
-            }
-            if (p1.y < 0) {
-                p1.y = -p1.y;
-                p1.vy *= -0.01;
-            }
-            if (p1.y >= this.h) {
-                p1.y = 2 * this.h - p1.y;
-                p1.vy *= -0.01;
-            }
 
-            p1.vx = (p1.vx + fx) * 0.5;
-            p1.vy = (p1.vy + fy) * 0.5;
-            p1.x += p1.vx;
-            p1.y += p1.vy;
+            // @formatter:off
+            const b = -1;
+            if (pA.x < 0)       { pA.vx *= b; pA.x = -pA.x; }
+            if (pA.x >= this.w) { pA.vx *= b; pA.x = 2 * this.w - pA.x; }
+            if (pA.y < 0)       { pA.vy *= b; pA.y = -pA.y; }
+            if (pA.y >= this.h) { pA.vy *= b; pA.y = 2 * this.h - pA.y; }
+            // @formatter:on
+
+            pA.vx = (pA.vx + fx) * 0.5;
+            pA.vy = (pA.vy + fy) * 0.5;
+
+            pA.x += pA.vx;
+            pA.y += pA.vy;
         }
+    }
+
+    private createParticle(): Particle {
+        return {
+            x: randIntExc(0, this.w),
+            y: randIntExc(0, this.h),
+            vx: 0,
+            vy: 0,
+        };
     }
 }

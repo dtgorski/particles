@@ -15,7 +15,7 @@
 
 <script lang="ts">
     import { defineComponent } from "vue";
-    import { model } from "@/Model";
+    import { model } from "@/model";
     import CanvasView from "@/views/CanvasView.vue";
     import EditorView from "@/views/EditorView.vue";
     import HeaderView from "@/views/HeaderView.vue";
@@ -62,7 +62,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 8px;
+    padding-top: 4px;
     max-height: 100vh;
     overflow-y: hidden;
     background-color: $bg-color-2;

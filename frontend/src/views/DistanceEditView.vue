@@ -1,7 +1,8 @@
 <template>
-    <div id="arena">
-        <canvas id="canvas" :width=width :height=height @click="click"></canvas>
-    </div>
+    <fieldset>
+        <legend>Force distance</legend>
+        <Slider v-model=distance :min=1 :max="Math.ceil(Math.sqrt(width*width + height*height))" :tooltips=false />
+    </fieldset>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -9,14 +10,12 @@
 <script lang="ts">
     import { defineComponent } from "vue";
     import { model } from "@/model";
+    import Slider from '@vueform/slider';
 
     export default defineComponent({
-        name: "CanvasView",
-        methods: {
-            click: (e: PointerEvent) => {
-                console.info(e.offsetX, e.offsetY);
-            }
-        },
+        name: "DistanceEditView",
+        components: { Slider },
+        methods: {},
         setup: () => {
             return model;
         },
@@ -28,14 +27,8 @@
 <style scoped lang="scss">
 @import "@/assets/css.scss";
 
-#arena {
-    border: 1px solid $bg-color-3;
-    border-radius: $border-radius;
-
-    #canvas {
-        width: 100%;
-        height: 100%;
-        background-color: $bg-color-0;
-    }
+fieldset {
+    padding: 16px;
+    * { cursor: default !important; }
 }
 </style>
