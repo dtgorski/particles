@@ -3,11 +3,11 @@
         <legend>Groups</legend>
         <div>
             <div></div>
-            <div v-show="groups.length">Label</div>
+            <div v-show=groups.length>Label</div>
             <div></div>
-            <div v-show="groups.length">Particles</div>
-            <div v-show="groups.length">Mass</div>
-            <div v-show="groups.length">Size</div>
+            <div v-show=groups.length>Particles</div>
+            <div v-show=groups.length>Mass</div>
+            <div v-show=groups.length>Size</div>
             <div>
                 <button
                     title="Add random particle group"
@@ -22,7 +22,7 @@
                 <button
                     title="On/Off"
                     class="icon-button"
-                    @click="toggle(i)">
+                    @click=toggle(i)>
                     <Icon icon="mdi:checkbox-marked-outline" v-if=group.active />
                     <Icon icon="mdi:checkbox-blank-outline" v-else />
                 </button>

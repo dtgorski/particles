@@ -1,18 +1,18 @@
 <template>
     <div id="header-view">
         <div id="buttons">
-            <button class="action-button" title="Pause" @click="stop" v-show="running === true">
+            <button class="action-button" title="Pause" @click=stop v-show="running === true">
                 <Icon icon="mdi:pause" />
             </button>
-            <button class="action-button" title="Play" @click="start" v-show="running === false">
+            <button class="action-button" title="Play" @click=start v-show="running === false">
                 <Icon icon="mdi:play" />
             </button>
-            <button class="action-button" title="Restart" @click="restart">
+            <button class="action-button" title="Restart" @click=restart>
                 <Icon icon="mdi:reload" />
             </button>
         </div>
         <div id="logo">
-            <div><img src="@/assets/logo.png" title="particles" width="132" height="50" /></div>
+            <div><img src="@/assets/logo.png" alt="particles" width="132" height="50" /></div>
             <div>particles</div>
         </div>
     </div>

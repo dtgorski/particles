@@ -71,7 +71,9 @@ export class Driver {
             // Add missing particles.
             const diff = group.count - drawGroup.particleCount;
             if (diff > 0) {
-                for (let i = 0; i < diff; i++) { drawGroup.particles.push(this.createParticle()); }
+                for (let i = 0; i < diff; i++) {
+                    drawGroup.particles.push(this.createParticle());
+                }
                 drawGroup.particleCount = group.count;
             }
             // Remove superfluous particles.
@@ -103,7 +105,7 @@ export class Driver {
         }
 
         this.applyRules(model.distance, model.pulse);
-        this.model.pulse.x = -1;
+        this.model.pulse.x = -1; // resets pulse
     }
 
     private applyRules(distance: number, pulse: Pulse): void {

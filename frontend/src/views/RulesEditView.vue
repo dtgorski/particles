@@ -1,26 +1,27 @@
 <template>
-    <fieldset v-show="groups.length">
+    <fieldset v-show=groups.length>
         <legend>Rules</legend>
         <div>
             <div></div>
-            <div v-show="rules.length">Group A</div>
+            <div v-show=rules.length>Group A</div>
             <div></div>
             <div>
                 <button
+                    v-show=rules.length
                     title="Flip all signs"
                     class="icon-button"
-                    @click="flipSigns()">
+                    @click=flipSigns()>
                     <Icon icon="mdi:plus-minus-variant" />
                 </button>
             </div>
-            <div v-show="rules.length">Gravity</div>
+            <div v-show=rules.length>Gravity</div>
             <div></div>
-            <div v-show="rules.length">Group B</div>
+            <div v-show=rules.length>Group B</div>
             <div :class="hasActiveGroups(groups) ? '' : 'disabled'">
                 <button
                     title="Add rule"
                     class="icon-button"
-                    @click="append()">
+                    @click=append()>
                     <Icon icon="mdi:plus" />
                 </button>
             </div>
@@ -30,8 +31,8 @@
                 <button
                     title="On/Off"
                     class="icon-button"
-                    @click="toggle(i)">
-                    <Icon icon="mdi:checkbox-marked-outline" v-if="rule.active" />
+                    @click=toggle(i)>
+                    <Icon icon="mdi:checkbox-marked-outline" v-if=rule.active />
                     <Icon icon="mdi:checkbox-blank-outline" v-else />
                 </button>
             </div>
