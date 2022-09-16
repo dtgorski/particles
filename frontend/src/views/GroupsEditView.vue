@@ -65,8 +65,8 @@
     import { defineComponent } from "vue";
     import { Chrome } from "vue-color";
     import { model } from "@/model";
-    import { GroupCtx } from "@/model/Group";
-    import { RuleCtx } from "@/model/Rule";
+    import { GroupCtx } from "@/model/GroupCtx";
+    import { RuleCtx } from "@/model/RuleCtx";
 
     export default defineComponent({
         name: "GroupsEditView",
@@ -137,7 +137,6 @@ fieldset {
             font-size: smaller;
             color: $color-pri;
             text-align: center;
-            @extend %user-select-none;
             @extend %text-shadow;
         }
 

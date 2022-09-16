@@ -3,7 +3,7 @@
 // Since we have no objects in the reactive model, we collect
 // the object methods externally. The fubar smell is strong here.
 
-import { Group, GroupCtx } from "@/model/Group";
+import { Group, GroupCtx } from "@/model/GroupCtx";
 import { randId, random } from "@/random";
 
 export type Rule = {

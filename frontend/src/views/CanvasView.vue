@@ -1,20 +1,26 @@
 <template>
     <div id="arena">
-        <canvas id="canvas" :width=width :height=height @click="click"></canvas>
+        <canvas id="canvas" :width=aspect.w :height=aspect.h @click="click"></canvas>
     </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-    import { defineComponent } from "vue";
+    import { defineComponent, toRaw } from "vue";
     import { model } from "@/model";
 
     export default defineComponent({
         name: "CanvasView",
         methods: {
             click: (e: PointerEvent) => {
-                console.info(e.offsetX, e.offsetY);
+                const elm = document.getElementById("canvas") as HTMLCanvasElement;
+                if (!elm) { return; }
+
+                let rect = elm.getBoundingClientRect();
+
+                model.pulse.x = (e.clientX - rect.left) * (elm.width / rect.width);
+                model.pulse.y = (e.clientY - rect.top) * (elm.height / rect.height);
             }
         },
         setup: () => {

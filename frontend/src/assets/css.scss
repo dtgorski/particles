@@ -17,7 +17,6 @@ $border-color-pri: #111;
 $border-color-sec: #444;
 
 %text-shadow { text-shadow: 1px 1px $bg-color-0; }
-%user-select-none { user-select: none; }
 
 %inset {
     border-style: solid;
@@ -58,6 +57,7 @@ body {
     font-family: sans-serif;
     color: $color-pri;
     background-image: radial-gradient(#888 30%, black 100%);
+    user-select: none;
 
     * { box-sizing: border-box;}
 }
@@ -74,7 +74,6 @@ fieldset {
         color: $color-sec;
         font-size: smaller;
         background-color: $bg-color-2;
-        @extend %user-select-none;
         @extend %text-shadow;
     }
 }
@@ -113,7 +112,6 @@ fieldset {
 }
 
 .disabled {
-    @extend %user-select-none;
     pointer-events: none;
     opacity: 0.5;
 }

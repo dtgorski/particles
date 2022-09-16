@@ -5,7 +5,14 @@
             <div></div>
             <div v-show="rules.length">Group A</div>
             <div></div>
-            <div></div>
+            <div>
+                <button
+                    title="Flip all signs"
+                    class="icon-button"
+                    @click="flipSigns()">
+                    <Icon icon="mdi:plus-minus-variant" />
+                </button>
+            </div>
             <div v-show="rules.length">Gravity</div>
             <div></div>
             <div v-show="rules.length">Group B</div>
@@ -47,10 +54,9 @@
             </div>
             <div>
                 <button
-                    tabindex="-1"
                     title="Flip sign"
                     class="icon-button"
-                    @click="flip(i)">
+                    @click="flipSign(i)">
                     <Icon icon="mdi:plus-minus-variant" />
                 </button>
             </div>
@@ -92,8 +98,8 @@
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
     import { model } from "@/model";
-    import { GroupCtx, Group, GroupId } from "@/model/Group";
-    import { RuleCtx } from "@/model/Rule";
+    import { GroupCtx, Group, GroupId } from "@/model/GroupCtx";
+    import { RuleCtx } from "@/model/RuleCtx";
 
     export default defineComponent({
         name: "RulesEditView",
@@ -106,8 +112,11 @@
             remove: (index: number) => {
                 model.rules.splice(index, 1);
             },
-            flip: (index: number) => {
+            flipSign: (index: number) => {
                 model.rules[index].gravity *= -1;
+            },
+            flipSigns: () => {
+                model.rules.forEach(rule => rule.gravity *= -1);
             },
             toggle: (index: number) => {
                 if (!model.rules[index].active) {
@@ -159,35 +168,25 @@ fieldset {
             font-size: smaller;
             color: $color-pri;
             text-align: center;
-            @extend %user-select-none;
             @extend %text-shadow;
             margin: 0 2px;
         }
 
         > div:nth-child(1) { flex: 0; min-width: 24px; margin-left: 0; }
         > div:nth-child(2) { flex: 8; min-width: 96px; }
-        > div:nth-child(3) { flex: 0; min-width: 24px; svg { max-width: 24px; } }
-        > div:nth-child(4) {
-            flex: 0;
-            min-width: 24px;
-            button {
-                &:hover, &:active, &:focus-visible {
-                    background: transparent;
-                    outline-style: none !important;
-                }
-            }
+        > div:nth-child(3) { flex: 0; min-width: 24px;
+            svg { max-width: 24px; }
+        }
+        > div:nth-child(4) { flex: 0; min-width: 24px; height: 18px;
             svg {
-                height: 16px;
-                width: 16px;
-                transform: translateX(5px)
+                width: 18px;
+                height: 18px;
             }
         }
-        > div:nth-child(5) {
-            flex: 8;
-            margin-left: -26px;
-            input { padding-left: 26px !important; }
+        > div:nth-child(5) { flex: 8; }
+        > div:nth-child(6) { flex: 0; min-width: 24px;
+            svg { max-width: 24px; }
         }
-        > div:nth-child(6) { flex: 0; min-width: 24px; svg { max-width: 24px; } }
         > div:nth-child(7) { flex: 8; min-width: 96px; }
         > div:nth-child(8) { flex: 0; min-width: 24px; margin-right: 0;}
     }

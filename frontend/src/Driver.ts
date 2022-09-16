@@ -1,7 +1,7 @@
-import { Model } from "@/model";
+import { Model, Pulse } from "@/model";
 import { toRaw } from "vue";
 import { randIntExc } from "@/random";
-import { GroupCtx } from "@/model/Group";
+import { GroupCtx } from "@/model/GroupCtx";
 
 export type Particle = {
     x: number
@@ -44,7 +44,7 @@ export class Driver {
     }
 
     update(): void {
-        const model = toRaw(this.model);
+        const model: Model = toRaw(this.model);
         const groupIds = Object.keys(this.drawGroupMap);
 
         // Remove deleted groups.
@@ -102,10 +102,11 @@ export class Driver {
             };
         }
 
-        this.applyRules(model.distance);
+        this.applyRules(model.distance, model.pulse);
+        this.model.pulse.x = -1;
     }
 
-    private applyRules(distance: number): void {
+    private applyRules(distance: number, pulse: Pulse): void {
         const rules = toRaw(this.model.rules);
 
         for (let i = 0; i < rules.length; i++) {
@@ -116,7 +117,7 @@ export class Driver {
             const drawGroupB: DrawGroup = this.drawGroupMap[rule.actorB.groupId];
             const gravity = rule.gravity;
 
-            this.applyRule(drawGroupA, drawGroupB, gravity, distance);
+            this.applyRule(drawGroupA, drawGroupB, gravity, distance, pulse);
         }
     }
 
@@ -124,7 +125,8 @@ export class Driver {
         drawGroupA: DrawGroup,
         drawGroupB: DrawGroup,
         g: number,
-        d: number
+        d: number,
+        pulse: Pulse
     ): void {
         const particlesA = drawGroupA.particles;
         const particlesB = drawGroupB.particles;
@@ -145,6 +147,17 @@ export class Driver {
                     //const f = g * ((drawGroupA.mass * drawGroupB.mass) / (r*r));
                     fx += f * dx * 0.1;
                     fy += f * dy * 0.1;
+                }
+            }
+
+            if (pulse.x >= 0 && pulse.y >= 0) {
+                const dx = pA.x - pulse.x;
+                const dy = pA.y - pulse.y;
+                const r = Math.sqrt(dx * dx + dy * dy);
+                if (r >= 1 && r <= d) {
+                    const f = 30 / r;
+                    fx += f * dx;
+                    fy += f * dy;
                 }
             }
 

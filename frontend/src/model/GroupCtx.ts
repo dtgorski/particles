@@ -47,15 +47,15 @@ export const GroupCtx = {
 
     createRandomGroup: (): Group => {
         const keys = Object.keys(colors);
-        const rnd = randIntInc(0, keys.length);
-        const key = keys[rnd];
+        const rnd = randIntExc(0, keys.length);
+        const name = keys[rnd];
         const shade = "" + randIntInc(1, 7) * 100;
 
         return <Group>{
             id: randId(),
             active: true,
-            color: colors[key as Color][shade as Shades],
-            label: key.toLowerCase().replace(/ /, "-") + "-" + shade.substring(0,1),
+            color: colors[name as Color][shade as Shades],
+            label: name.toLowerCase().replace(/ /, "-") + "-" + shade.substring(0,1),
             count: randIntInc(50, 80) * 10,
             size: randIntInc(1, 4) * 2,
             mass: 1

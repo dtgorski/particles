@@ -30,7 +30,7 @@
 @import "@/assets/css.scss";
 
 #editor-view {
-    width: 440px;
+    width: 460px;
     overflow-x: hidden;
     overflow-y: auto;
 

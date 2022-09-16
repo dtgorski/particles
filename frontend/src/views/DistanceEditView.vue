@@ -1,7 +1,7 @@
 <template>
     <fieldset>
         <legend>Force distance</legend>
-        <Slider v-model=distance :min=1 :max="Math.ceil(Math.sqrt(width*width + height*height))" :tooltips=false />
+        <Slider v-model=distance :min=1 :max="Math.ceil(Math.sqrt(aspect.w*aspect.w + aspect.h*aspect.h))" :tooltips=false />
     </fieldset>
 </template>
 

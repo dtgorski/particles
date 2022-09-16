@@ -1,38 +1,48 @@
 import { reactive } from "vue";
-import { GroupCtx, Group } from "@/model/Group";
-import { RuleCtx, Rule } from "@/model/Rule";
+import { GroupCtx, Group } from "@/model/GroupCtx";
+import { RuleCtx, Rule } from "@/model/RuleCtx";
+
+export type Aspect = {
+    w: number
+    h: number
+}
+
+export type Pulse = {
+    x: number
+    y: number
+}
 
 export type Model = {
-    width: number,
-    height: number,
+    aspect: Aspect,
     distance: number
     running: boolean
     groups: Group[]
-    rules: Rule[]
+    rules: Rule[],
+    pulse: Pulse
 }
 
-const groups: Group[] = [
-    GroupCtx.createRandomGroup(),
-    GroupCtx.createRandomGroup(),
-    GroupCtx.createRandomGroup(),
-];
+const groups: Group[] = [];
 const rules: Rule[] = [];
 
-groups.forEach(group => { rules.push(RuleCtx.createRule(group, group, RuleCtx.randomGravity())); });
+groups.push(GroupCtx.createRandomGroup());
+groups.push(GroupCtx.createRandomGroup());
+groups.push(GroupCtx.createRandomGroup());
+
+groups.forEach(group => {
+    rules.push(RuleCtx.createRule(group, group, RuleCtx.randomGravity()));
+});
+
 rules.push(RuleCtx.createRule(groups[0], groups[1], RuleCtx.randomGravity()));
 rules.push(RuleCtx.createRule(groups[1], groups[2], RuleCtx.randomGravity()));
 rules.push(RuleCtx.createRule(groups[2], groups[0], RuleCtx.randomGravity()));
 
-const w = 1024;
-const h = 1024;
-
 const initial: Required<Model> = {
-    width: w,
-    height: h,
+    aspect: { w: 1024, h: 1024 },
     distance: 180,
     running: false,
     groups: groups,
-    rules: rules
+    rules: rules,
+    pulse: { x: -1, y: -1, }
 };
 
 export const model = reactive(initial);

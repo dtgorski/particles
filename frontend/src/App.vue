@@ -15,7 +15,6 @@
 
 <script lang="ts">
     import { defineComponent } from "vue";
-    import { model } from "@/model";
     import CanvasView from "@/views/CanvasView.vue";
     import EditorView from "@/views/EditorView.vue";
     import HeaderView from "@/views/HeaderView.vue";
@@ -26,11 +25,6 @@
             HeaderView,
             CanvasView,
             EditorView
-        },
-        setup: () => {
-            return {
-                groups: model.groups,
-            };
         },
     });
 </script>

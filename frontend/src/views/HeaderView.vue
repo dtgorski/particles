@@ -12,7 +12,7 @@
             </button>
         </div>
         <div id="logo">
-            <div><img src="@/assets/logo.png" alt="particles" width="132" height="50" /></div>
+            <div><img src="@/assets/logo.png" title="particles" width="132" height="50" /></div>
             <div>particles</div>
         </div>
     </div>
@@ -80,7 +80,6 @@
         }
     }
     #logo {
-        @extend %user-select-none;
         > div:nth-child(2) {
             display: flex;
             gap: 2px;
