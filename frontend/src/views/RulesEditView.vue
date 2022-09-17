@@ -11,7 +11,7 @@
                     title="Flip all signs"
                     class="icon-button"
                     @click=flipSigns()>
-                    <Icon icon="mdi:plus-minus-variant" />
+                    <Icon icon="mdi:plus-minus" />
                 </button>
             </div>
             <div v-show=rules.length>Gravity</div>
@@ -58,7 +58,7 @@
                     title="Flip sign"
                     class="icon-button"
                     @click="flipSign(i)">
-                    <Icon icon="mdi:plus-minus-variant" />
+                    <Icon icon="mdi:plus-minus" />
                 </button>
             </div>
             <div>

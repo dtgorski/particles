@@ -10,7 +10,6 @@
     "dependencies": {
         "@iconify/vue": "^3.2.1",
         "@types/uuid": "^8.3.4",
-        "@types/vue-color": "^2.4.4",
         "@typescript-eslint/eslint-plugin": "^5.4.0",
         "@typescript-eslint/parser": "^5.4.0",
         "@vue/cli-plugin-babel": "~5.0.0",
@@ -26,7 +25,6 @@
         "sass-loader": "^12.0.0",
         "typescript": "~4.5.5",
         "uuid": "^9.0.0",
-        "vue": "^3.2.13",
-        "vue-color": "^2.8.1"
+        "vue": "^3.2.13"
     }
 }

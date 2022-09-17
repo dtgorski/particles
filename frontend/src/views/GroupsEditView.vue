@@ -37,11 +37,12 @@
             <div>
                 <button
                     title="Change color"
-                    class="icon-button disabled"
+                    class="icon-button"
                     style="opacity: 1 !important;"
                     :style="{ color: group.color }">
                     <Icon icon="mdi:palette" />
                 </button>
+
             </div>
             <div><input type="number" v-model=group.count min="1" step="1"></div>
             <div><input v-model=group.mass min="0" step="0.1" class="disabled" style="text-align: center" tabindex="-1"></div>
@@ -63,14 +64,13 @@
 <script lang="ts">
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
-    import { Chrome } from "vue-color";
     import { model } from "@/model";
     import { GroupCtx } from "@/model/GroupCtx";
     import { RuleCtx } from "@/model/RuleCtx";
 
     export default defineComponent({
         name: "GroupsEditView",
-        components: { Icon, "chrome-picker": Chrome },
+        components: { Icon },
         methods: {
             append: () => {
                 model.groups.push(GroupCtx.createRandomGroup());
@@ -148,5 +148,8 @@ fieldset {
         > div:nth-child(6) { flex: 8; }
         > div:nth-child(7) { flex: 0;}
     }
+}
+#color-picker {
+    background-color: #000 !important;
 }
 </style>
