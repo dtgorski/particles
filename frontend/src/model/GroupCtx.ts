@@ -57,7 +57,7 @@ export const GroupCtx = {
             color: colors[name as Color][shade as Shades],
             label: name.toLowerCase().replace(/ /, "-") + "-" + shade.substring(0,1),
             count: randIntInc(50, 80) * 10,
-            size: randIntInc(1, 4) * 2,
+            size: randIntInc(2, 4),
             mass: 1
         };
     }

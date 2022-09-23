@@ -1,7 +1,7 @@
 import { Model, Pulse } from "@/model";
 import { toRaw } from "vue";
-import { randIntExc } from "@/random";
 import { GroupCtx } from "@/model/GroupCtx";
+import { Universe } from "@/Universe";
 
 export type Particle = {
     x: number
@@ -22,20 +22,15 @@ export type DrawGroup = {
 }
 
 export class Driver {
-    private drawGroupMap: DrawGroupMap = {}
+    private map: DrawGroupMap = {}
 
     constructor(
         readonly model: Model,
-        readonly w = 1024,
-        readonly h = 1024
+        readonly universe: Universe,
     ) {}
 
-    getModel(): Model {
-        return this.model;
-    }
-
-    getDrawGroupMap(): DrawGroupMap {
-        return this.drawGroupMap;
+    drawGroupMap(): DrawGroupMap {
+        return this.map;
     }
 
     commit(updateCanvas: () => void): void {
@@ -45,12 +40,12 @@ export class Driver {
 
     update(): void {
         const model: Model = toRaw(this.model);
-        const groupIds = Object.keys(this.drawGroupMap);
+        const groupIds = Object.keys(this.map);
 
         // Remove deleted groups.
         for (let i = 0; i < groupIds.length; i++) {
             if (!GroupCtx.getGroupById(model.groups, groupIds[i])) {
-                delete (this.drawGroupMap[groupIds[i]]);
+                delete (this.map[groupIds[i]]);
                 groupIds.splice(i, 0);
             }
         }
@@ -61,7 +56,7 @@ export class Driver {
             const group = GroupCtx.getGroupById(model.groups, groupId);
             if (!group) { continue; }
 
-            const drawGroup = this.drawGroupMap[groupId];
+            const drawGroup = this.map[groupId];
 
             drawGroup.active = group.active;
             drawGroup.mass = group.mass;
@@ -72,7 +67,7 @@ export class Driver {
             const diff = group.count - drawGroup.particleCount;
             if (diff > 0) {
                 for (let i = 0; i < diff; i++) {
-                    drawGroup.particles.push(this.createParticle());
+                    drawGroup.particles.push(this.universe.createParticle());
                 }
                 drawGroup.particleCount = group.count;
             }
@@ -88,13 +83,13 @@ export class Driver {
 
             const group = model.groups[i];
             if (!group.active) { continue; }
-            if (this.drawGroupMap[group.id]) { continue; }
+            if (this.map[group.id]) { continue; }
 
             const particles = [];
             for (let j = 0; j < group.count; j++) {
-                particles.push(this.createParticle());
+                particles.push(this.universe.createParticle());
             }
-            this.drawGroupMap[group.id] = <DrawGroup>{
+            this.map[group.id] = <DrawGroup>{
                 active: group.active,
                 mass: group.mass,
                 size: group.size,
@@ -104,87 +99,22 @@ export class Driver {
             };
         }
 
-        this.applyRules(model.distance, model.pulse);
-        this.model.pulse.x = -1; // resets pulse
+        this.apply(model.distance, model.pulse);
+        this.model.pulse = undefined;
     }
 
-    private applyRules(distance: number, pulse: Pulse): void {
+    private apply(distance: number, pulse: Pulse | undefined): void {
         const rules = toRaw(this.model.rules);
 
         for (let i = 0; i < rules.length; i++) {
             const rule = rules[i];
             if (!rule.active) { continue; }
 
-            const drawGroupA: DrawGroup = this.drawGroupMap[rule.actorA.groupId];
-            const drawGroupB: DrawGroup = this.drawGroupMap[rule.actorB.groupId];
+            const drawGroupA: DrawGroup = this.map[rule.actorA.groupId];
+            const drawGroupB: DrawGroup = this.map[rule.actorB.groupId];
             const gravity = rule.gravity;
 
-            this.applyRule(drawGroupA, drawGroupB, gravity, distance, pulse);
+            this.universe.calculate(drawGroupA, drawGroupB, pulse, gravity, distance);
         }
-    }
-
-    private applyRule(
-        drawGroupA: DrawGroup,
-        drawGroupB: DrawGroup,
-        g: number,
-        d: number,
-        pulse: Pulse
-    ): void {
-        const particlesA = drawGroupA.particles;
-        const particlesB = drawGroupB.particles;
-
-        for (let i = 0; i < particlesA.length; i++) {
-            const pA = particlesA[i];
-            let fx = 0, fy = 0;
-
-            for (let j = 0; j < particlesB.length; j++) {
-                const pB = particlesB[j];
-
-                const dx = pA.x - pB.x;
-                const dy = pA.y - pB.y;
-                const r = Math.sqrt(dx * dx + dy * dy);
-
-                if (r >= 1 && r <= d) {
-                    const f = g / r;
-                    //const f = g * ((drawGroupA.mass * drawGroupB.mass) / (r*r));
-                    fx += f * dx * 0.1;
-                    fy += f * dy * 0.1;
-                }
-            }
-
-            if (pulse.x >= 0 && pulse.y >= 0) {
-                const dx = pA.x - pulse.x;
-                const dy = pA.y - pulse.y;
-                const r = Math.sqrt(dx * dx + dy * dy);
-                if (r >= 1 && r <= d) {
-                    const f = 30 / r;
-                    fx += f * dx;
-                    fy += f * dy;
-                }
-            }
-
-            // @formatter:off
-            const b = -1;
-            if (pA.x < 0)       { pA.vx *= b; pA.x = -pA.x; }
-            if (pA.x >= this.w) { pA.vx *= b; pA.x = 2 * this.w - pA.x; }
-            if (pA.y < 0)       { pA.vy *= b; pA.y = -pA.y; }
-            if (pA.y >= this.h) { pA.vy *= b; pA.y = 2 * this.h - pA.y; }
-            // @formatter:on
-
-            pA.vx = (pA.vx + fx) * 0.5;
-            pA.vy = (pA.vy + fy) * 0.5;
-
-            pA.x += pA.vx;
-            pA.y += pA.vy;
-        }
-    }
-
-    private createParticle(): Particle {
-        return {
-            x: randIntExc(0, this.w),
-            y: randIntExc(0, this.h),
-            vx: 0,
-            vy: 0,
-        };
     }
 }

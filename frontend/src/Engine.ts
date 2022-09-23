@@ -5,6 +5,7 @@ export class Engine {
     readonly ctx: CanvasRenderingContext2D;
     readonly w: number;
     readonly h: number;
+
     private r = false;
 
     constructor(readonly canvas: HTMLCanvasElement, readonly driver: Driver) {
@@ -16,24 +17,22 @@ export class Engine {
         this.h = this.canvas.height;
     }
 
-    getDriver(): Driver {
-        return this.driver;
-    }
-
     start(): void {
-        if (this.r) {return; }
-        this.r = true;
-        this.getDriver().getModel().running = this.r; // FIXME
+        if (this.running()) { return; }
+        this.setRunning(true);
         this.updateCanvas();
     }
 
     stop(): void {
-        this.r = false;
-        this.getDriver().getModel().running = this.r; // FIXME
+        this.setRunning(false);
     }
 
     running(): boolean {
         return this.r;
+    }
+
+    private setRunning = (flag: boolean) => {
+        this.r = flag;
     }
 
     private drawParticle = (x: number, y: number, r: number, c: string) => {
@@ -43,10 +42,14 @@ export class Engine {
         this.ctx.fill();
     }
 
-    private updateCanvas(): void {
+    private clearRect = () => {
         this.ctx.clearRect(0, 0, this.w, this.h);
+    }
 
-        const drawGroupMap = this.driver.getDrawGroupMap();
+    private updateCanvas(): void {
+        this.clearRect();
+
+        const drawGroupMap = this.driver.drawGroupMap();
         const groupIds = Object.keys(drawGroupMap);
 
         for (let i = 0; i < groupIds.length; i++) {
@@ -60,10 +63,9 @@ export class Engine {
                 this.drawParticle(p.x, p.y, drawData.size, drawData.color);
             }
         }
-        if (this.r) {
-            this.driver.commit(
-                this.updateCanvas.bind(this)
-            );
+
+        if (this.running()) {
+            this.driver.commit(this.updateCanvas.bind(this));
         }
     }
 }

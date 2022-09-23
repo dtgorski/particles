@@ -45,7 +45,8 @@
 
             </div>
             <div><input type="number" v-model=group.count min="1" step="1"></div>
-            <div><input v-model=group.mass min="0" step="0.1" class="disabled" style="text-align: center" tabindex="-1"></div>
+            <div><input v-model=group.mass min="0" step="0.1" class="disabled" style="text-align: center" tabindex="-1">
+            </div>
             <div><input type="number" v-model=group.size min="0" step="1"></div>
             <div>
                 <button
@@ -69,7 +70,6 @@
     import { RuleCtx } from "@/model/RuleCtx";
 
     export default defineComponent({
-        name: "GroupsEditView",
         components: { Icon },
         methods: {
             append: () => {
@@ -115,9 +115,7 @@
                 }
             },
         },
-        setup: () => {
-            return model;
-        },
+        setup: () => { return model; },
     });
 </script>
 

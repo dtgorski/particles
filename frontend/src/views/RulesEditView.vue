@@ -103,7 +103,6 @@
     import { RuleCtx } from "@/model/RuleCtx";
 
     export default defineComponent({
-        name: "RulesEditView",
         components: { Icon },
         methods: {
             append: () => {
@@ -148,9 +147,7 @@
                 return GroupCtx.getGroupById(model.groups, groupId);
             }
         },
-        setup: () => {
-            return model;
-        },
+        setup: () => { return model; },
     });
 </script>
 

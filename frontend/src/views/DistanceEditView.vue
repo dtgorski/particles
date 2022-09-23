@@ -19,12 +19,9 @@
     import Slider from '@vueform/slider';
 
     export default defineComponent({
-        name: "DistanceEditView",
         components: { Slider },
         methods: {},
-        setup: () => {
-            return model;
-        },
+        setup: () => { return model; },
     });
 </script>
 

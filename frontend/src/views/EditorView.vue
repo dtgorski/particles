@@ -3,6 +3,10 @@
         <DistanceEditView />
         <GroupsEditView />
         <RulesEditView />
+        <div>
+            <div></div>
+            <div class="emboss">No randomness at play - except the initialization.</div>
+        </div>
     </div>
 </template>
 
@@ -15,7 +19,6 @@
     import DistanceEditView from "@/views/DistanceEditView.vue";
 
     export default defineComponent({
-        name: "EditorView",
         components: {
             DistanceEditView,
             GroupsEditView,
@@ -30,7 +33,9 @@
 @import "@/assets/css.scss";
 
 #editor-view {
-    width: 460px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
 
@@ -54,6 +59,17 @@
 
     input[type=number] {
         text-align: center;
+    }
+
+    > div:last-child {
+        flex: 1;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        > div:nth-child(1) { flex: 1; }
+        > div:nth-child(2) { color: $bg-color-5; }
     }
 }
 </style>

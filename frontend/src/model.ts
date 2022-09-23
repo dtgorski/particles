@@ -10,6 +10,7 @@ export type Aspect = {
 export type Pulse = {
     x: number
     y: number
+    g: number
 }
 
 export type Model = {
@@ -18,7 +19,7 @@ export type Model = {
     running: boolean
     groups: Group[]
     rules: Rule[],
-    pulse: Pulse
+    pulse: Pulse | undefined
 }
 
 const groups: Group[] = [];
@@ -38,11 +39,11 @@ rules.push(RuleCtx.createRule(groups[2], groups[0], RuleCtx.randomGravity()));
 
 const initial: Required<Model> = {
     aspect: { w: 1024, h: 1024 },
-    distance: 180,
+    distance: 256,
     running: false,
     groups: groups,
     rules: rules,
-    pulse: { x: -1, y: -1, }
+    pulse: undefined,
 };
 
 export const model = reactive(initial);

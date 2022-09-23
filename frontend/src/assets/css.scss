@@ -10,6 +10,7 @@ $bg-color-1: #111;
 $bg-color-2: #222;
 $bg-color-3: #333;
 $bg-color-4: #444;
+$bg-color-5: #555;
 
 $border-width: 1px;
 $border-radius: 4px;
@@ -55,8 +56,9 @@ $border-color-sec: #444;
 body {
     margin: 0;
     font-family: sans-serif;
+
     color: $color-pri;
-    background-image: radial-gradient(#888 30%, black 100%);
+    background-image: radial-gradient(#888 30%, #000 100%);
     user-select: none;
 
     * { box-sizing: border-box;}
@@ -94,7 +96,6 @@ fieldset {
         > svg { color: #fff; }
     }
 }
-
 .icon-button {
     > svg {
         height: 24px;
@@ -102,7 +103,6 @@ fieldset {
         filter: drop-shadow(1px 1px 0 $bg-color-0);
     }
 }
-
 .action-button {
     > svg {
         height: 32px;

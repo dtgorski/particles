@@ -26,32 +26,29 @@
     import { Driver } from "@/Driver";
     import { Engine } from "@/Engine";
     import { model } from "@/model";
+    import { Universe } from "@/Universe";
 
-    // FIXME
-    declare global { interface Window {engine: Engine;} }
-    const sim: Window = window;
+    let engine: Engine;
 
-    const createEngine = (): Engine => {
-        const canvas = document.getElementById("canvas");
-        if (!canvas) { console.error("Element with id 'canvas' not found, bailing out"); }
-
-        let elm = canvas as HTMLCanvasElement;
-        const driver = new Driver(model, elm.width, elm.height);
-
-        return new Engine(elm, driver);
-    };
-
-    const start = () => { sim.engine?.start(); };
-    const stop = () => { sim.engine?.stop(); };
-    const running = (): boolean => { return sim.engine?.running(); };
-    const restart = () => {
+    const start /*  */ = () => { engine?.start(); model.running = running(); };
+    const stop /*   */ = () => { engine?.stop();  model.running = running(); };
+    const running /**/ = () => { return engine?.running(); };
+    const restart /**/ = () => {
         stop();
-        sim.engine = createEngine();
+        engine = createEngine(document.getElementById("canvas"));
         start();
     };
 
+    const createEngine = (elm: HTMLElement | null): Engine => {
+        if (!elm) { console.error("createEngine: element not found, bailing out"); }
+
+        const canvas = elm as HTMLCanvasElement;
+        const driver = new Driver(model, new Universe(canvas.width, canvas.height));
+
+        return new Engine(canvas, driver);
+    };
+
     export default defineComponent({
-        name: "HeaderView",
         components: { Icon },
         methods: { start, stop, running, restart },
         mounted() { restart(); },
@@ -71,7 +68,7 @@
         display: flex;
         gap: 8px;
         flex-grow: 1;
-        align-items: flex-start;
+        justify-content: flex-start;
 
         button {
             width: 48px;
