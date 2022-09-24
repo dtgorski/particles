@@ -1,6 +1,8 @@
 import { reactive } from "vue";
-import { GroupCtx, Group } from "@/model/GroupCtx";
-import { RuleCtx, Rule } from "@/model/RuleCtx";
+import { Group } from "@/context/Group";
+import { Rule } from "@/context/Rule";
+import { rules, groups } from "@/init";
+import { Picker, PickerCtx } from "@/context/Picker";
 
 export type Aspect = {
     w: number
@@ -19,35 +21,18 @@ export type Model = {
     running: boolean
     groups: Group[]
     rules: Rule[],
-    pulse: Pulse | undefined
+    pulse: Pulse | undefined,
+    picker: Picker
 }
-
-const groups: Group[] = [];
-const rules: Rule[] = [];
-
-groups.push(GroupCtx.createRandomGroup());
-groups.push(GroupCtx.createRandomGroup());
-groups.push(GroupCtx.createRandomGroup());
-
-groups.forEach(group => {
-    rules.push(RuleCtx.createRule(group, group, RuleCtx.randomGravity()));
-});
-
-rules.push(RuleCtx.createRule(groups[0], groups[1], RuleCtx.randomGravity()));
-rules.push(RuleCtx.createRule(groups[1], groups[2], RuleCtx.randomGravity()));
-rules.push(RuleCtx.createRule(groups[2], groups[0], RuleCtx.randomGravity()));
 
 const initial: Required<Model> = {
     aspect: { w: 1024, h: 1024 },
     distance: 256,
-    running: false,
+    running: true,
     groups: groups,
     rules: rules,
     pulse: undefined,
+    picker: PickerCtx.createNullPicker()
 };
 
 export const model = reactive(initial);
-
-// Different sizes and opposite attractions for the first group cluster.
-groups.forEach((_, i) => { groups[i].size = (i + 1) * 2; });
-rules.forEach((_, i) => { rules[i].gravity = i % 2 ? Math.abs(rules[i].gravity) : -Math.abs(rules[i].gravity);});

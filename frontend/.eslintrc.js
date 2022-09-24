@@ -19,7 +19,8 @@ module.exports = {
         "semi": ["error", "always"],
         "vue/no-unused-components": "off",
         "vue/no-unused-vars": "off",
-        "vue/script-indent": [ "error", 4, { "baseIndent": 1 } ]
+        "vue/script-indent": [ "error", 4, { "baseIndent": 1 } ],
+        "vue/valid-v-on": "off"
     },
     overrides: [
         {

@@ -1,7 +1,7 @@
 import { Model, Pulse } from "@/model";
 import { toRaw } from "vue";
-import { GroupCtx } from "@/model/GroupCtx";
-import { Universe } from "@/Universe";
+import { GroupCtx } from "@/context/Group";
+import { Universe } from "@/engine/Universe";
 
 export type Particle = {
     x: number
@@ -59,22 +59,22 @@ export class Driver {
             const drawGroup = this.map[groupId];
 
             drawGroup.active = group.active;
-            drawGroup.mass = group.mass;
-            drawGroup.size = group.size;
-            drawGroup.color = group.color;
+            drawGroup.mass = group.particleMass;
+            drawGroup.size = group.particleSize;
+            drawGroup.color = group.colorValue;
 
             // Add missing particles.
-            const diff = group.count - drawGroup.particleCount;
+            const diff = group.particleCount - drawGroup.particleCount;
             if (diff > 0) {
                 for (let i = 0; i < diff; i++) {
                     drawGroup.particles.push(this.universe.createParticle());
                 }
-                drawGroup.particleCount = group.count;
+                drawGroup.particleCount = group.particleCount;
             }
             // Remove superfluous particles.
             if (diff < 0) {
                 drawGroup.particles.splice(0, -diff);
-                drawGroup.particleCount = group.count;
+                drawGroup.particleCount = group.particleCount;
             }
         }
 
@@ -86,14 +86,14 @@ export class Driver {
             if (this.map[group.id]) { continue; }
 
             const particles = [];
-            for (let j = 0; j < group.count; j++) {
+            for (let j = 0; j < group.particleCount; j++) {
                 particles.push(this.universe.createParticle());
             }
             this.map[group.id] = <DrawGroup>{
                 active: group.active,
-                mass: group.mass,
-                size: group.size,
-                color: group.color,
+                mass: group.particleMass,
+                size: group.particleSize,
+                color: group.colorValue,
                 particles: particles,
                 particleCount: particles.length,
             };

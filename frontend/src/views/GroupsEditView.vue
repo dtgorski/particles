@@ -12,7 +12,7 @@
                 <button
                     title="Add random particle group"
                     class="icon-button"
-                    @click="append()">
+                    @click="append">
                     <Icon icon="mdi:plus" />
                 </button>
             </div>
@@ -28,26 +28,28 @@
                 </button>
             </div>
             <div>
-                <input
-                    type="text"
-                    spellcheck="false"
-                    v-model=group.label
-                >
+                <input type="text" spellcheck="false" v-model=group.label />
             </div>
             <div>
                 <button
                     title="Change color"
                     class="icon-button"
                     style="opacity: 1 !important;"
-                    :style="{ color: group.color }">
-                    <Icon icon="mdi:palette" />
+                    :style="{ color: group.colorValue }">
+                    <Icon icon="mdi:palette" @click.stop="pick(group.id, $event)" />
                 </button>
 
             </div>
-            <div><input type="number" v-model=group.count min="1" step="1"></div>
-            <div><input v-model=group.mass min="0" step="0.1" class="disabled" style="text-align: center" tabindex="-1">
+            <div><input type="number" v-model=group.particleCount min="1" step="1" /></div>
+            <div><input
+                v-model=group.particleMass
+                min="0"
+                step="0.1"
+                class="disabled"
+                style="text-align: center"
+                tabindex="-1" />
             </div>
-            <div><input type="number" v-model=group.size min="0" step="1"></div>
+            <div><input type="number" v-model=group.particleSize min="0" step="1" /></div>
             <div>
                 <button
                     title="Remove group"
@@ -58,6 +60,7 @@
             </div>
         </div>
     </fieldset>
+    <ColorPickerView v-show="picker.active" @colorPicked=picked />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -66,11 +69,40 @@
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
     import { model } from "@/model";
-    import { GroupCtx } from "@/model/GroupCtx";
-    import { RuleCtx } from "@/model/RuleCtx";
+    import { GroupCtx, Group, GroupId } from "@/context/Group";
+    import { RuleCtx } from "@/context/Rule";
+    import ColorPickerView from "@/views/ColorPickerView.vue";
+    import { on, un } from "@/util";
+    import { ColorData } from "@/context/Color";
+    import { PickerCtx } from "@/context/Picker";
+
+    // Deactivate rules depending on this group.
+    const deactivateRules = (group: Group) => {
+        for (let i = 0; i < model.rules.length; i++) {
+            if (RuleCtx.hasActor(model.rules[i], group.id)) {
+                model.rules[i].active = false;
+            }
+        }
+    };
+
+    // When group has been activated, check if we can reactivate rules.
+    const reactivateRules = (group: Group) => {
+        for (let i = 0; i < model.rules.length; i++) {
+            if (RuleCtx.hasActor(model.rules[i], group.id)) {
+                const [ actorA, actorB ] = RuleCtx.getActors(model.rules[i]);
+
+                const groupA = GroupCtx.getGroupById(model.groups, actorA.groupId);
+                const groupB = GroupCtx.getGroupById(model.groups, actorB.groupId);
+
+                if (groupA?.active && groupB?.active) {
+                    model.rules[i].active = true;
+                }
+            }
+        }
+    };
 
     export default defineComponent({
-        components: { Icon },
+        components: { ColorPickerView, Icon },
         methods: {
             append: () => {
                 model.groups.push(GroupCtx.createRandomGroup());
@@ -91,32 +123,29 @@
                 const affected = model.groups[index];
                 model.groups[index].active = !affected.active;
 
-                // Deactivate rules depending on this group.
-                if (!model.groups[index].active) {
-                    for (let i = 0; i < model.rules.length; i++) {
-                        if (RuleCtx.hasActor(model.rules[i], affected.id)) {
-                            model.rules[i].active = false;
-                        }
-                    }
-                    return;
-                }
-
-                // Group has been activated, check if we can reactivate rules.
-                for (let i = 0; i < model.rules.length; i++) {
-                    if (RuleCtx.hasActor(model.rules[i], affected.id)) {
-                        const [ a, b ] = RuleCtx.getActors(model.rules[i]);
-                        const groupA = GroupCtx.getGroupById(model.groups, a.groupId);
-                        const groupB = GroupCtx.getGroupById(model.groups, b.groupId);
-
-                        if (groupA?.active && groupB?.active) {
-                            model.rules[i].active = true;
-                        }
-                    }
-                }
+                deactivateRules(affected);
+                reactivateRules(affected);
             },
+            pick: (groupId: GroupId, e: MouseEvent) => {
+                const picker = document.getElementById("picker");
+                if (!picker) { return; }
+
+                model.picker = PickerCtx.createPicker(groupId);
+                picker.style.left = (e.clientX - 8) + "px";
+                picker.style.top = (e.clientY - 8) + "px";
+            },
+            picked: (color: ColorData) => {
+                const group = GroupCtx.getGroupById(model.groups, model.picker.groupId);
+                if (!group) { return; }
+                GroupCtx.setGroupColor(group, color);
+            }
         },
+        mounted: () => { on(document.body, "click", pickerClicker); },
+        unmounted: () => { un(document.body, "click", pickerClicker); },
         setup: () => { return model; },
     });
+
+    const pickerClicker = () => { model.picker = PickerCtx.createNullPicker(); };
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -126,8 +155,8 @@
 
 fieldset {
     > div {
-        display: flex;
         gap: 4px;
+        display: flex;
         align-items: center;
         justify-content: flex-end;
 
@@ -146,8 +175,5 @@ fieldset {
         > div:nth-child(6) { flex: 8; }
         > div:nth-child(7) { flex: 0;}
     }
-}
-#color-picker {
-    background-color: #000 !important;
 }
 </style>

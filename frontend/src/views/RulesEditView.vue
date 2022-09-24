@@ -10,7 +10,7 @@
                     v-show=rules.length
                     title="Flip all signs"
                     class="icon-button"
-                    @click=flipSigns()>
+                    @click=flipSigns>
                     <Icon icon="mdi:plus-minus" />
                 </button>
             </div>
@@ -21,7 +21,7 @@
                 <button
                     title="Add rule"
                     class="icon-button"
-                    @click=append()>
+                    @click=append>
                     <Icon icon="mdi:plus" />
                 </button>
             </div>
@@ -50,7 +50,10 @@
             </div>
             <div>
                 <Icon icon="mdi:checkbox-blank-circle"
-                      :style="{ color: getGroup(rule.actorA.groupId).color, width: getGroup(rule.actorA.groupId).size * 2 }"
+                      :style="{
+                            color: getGroup(rule.actorA.groupId).colorValue,
+                            width: getGroup(rule.actorA.groupId).particleSize * 2
+                      }"
                 />
             </div>
             <div>
@@ -62,11 +65,14 @@
                 </button>
             </div>
             <div>
-                <input type="number" v-model=rule.gravity step="0.01" min="-1" max="1">
+                <input type="number" v-model=rule.gravity step="0.01" min="-1" max="1" />
             </div>
             <div>
                 <Icon icon="mdi:checkbox-blank-circle"
-                      :style="{ color: getGroup(rule.actorB.groupId).color, width: getGroup(rule.actorB.groupId).size * 2 }"
+                      :style="{
+                            color: getGroup(rule.actorB.groupId).colorValue,
+                            width: getGroup(rule.actorB.groupId).particleSize * 2
+                      }"
                 />
             </div>
             <div :class="rule.active ? '' : 'disabled'">
@@ -99,8 +105,8 @@
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
     import { model } from "@/model";
-    import { GroupCtx, Group, GroupId } from "@/model/GroupCtx";
-    import { RuleCtx } from "@/model/RuleCtx";
+    import { GroupCtx, Group, GroupId } from "@/context/Group";
+    import { RuleCtx } from "@/context/Rule";
 
     export default defineComponent({
         components: { Icon },
@@ -163,11 +169,11 @@ fieldset {
         justify-content: flex-end;
 
         > div {
-            font-size: smaller;
+            margin: 0 2px;
             color: $color-pri;
+            font-size: smaller;
             text-align: center;
             @extend %text-shadow;
-            margin: 0 2px;
         }
 
         > div:nth-child(1) { flex: 0; min-width: 24px; margin-left: 0; }
@@ -190,11 +196,11 @@ fieldset {
     }
 
     option {
-        @extend %text-shadow;
         padding: 2px;
         font-size: small;
-        background: $bg-color-3;
         line-height: 125%;
+        @extend %text-shadow;
+        background: $bg-color-3;
 
         &:disabled {
             color: #999;

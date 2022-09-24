@@ -5,7 +5,11 @@
         <RulesEditView />
         <div>
             <div></div>
-            <div class="emboss">No randomness at play - except the initialization.</div>
+            <div>
+                <a href="https://github.com/dtgorski/particles" target="_blank">
+                    Copyright © Daniel T. Gorski · dtg [at] lengo [dot] org
+                </a>
+            </div>
         </div>
     </div>
 </template>
@@ -33,21 +37,21 @@
 @import "@/assets/css.scss";
 
 #editor-view {
-    display: flex;
-    flex-direction: column;
     height: 100%;
-    overflow-x: hidden;
+    display: flex;
     overflow-y: auto;
+    overflow-x: hidden;
+    flex-direction: column;
 
     input, select {
         width: 100%;
+        color: #fff;
         border-width: 1px;
         border-radius: 2px;
-        padding: 5px 4px 2px 5px;
         margin-bottom: 4px;
-        color: #fff;
-        background-color: $bg-color-4;
         @extend %text-shadow;
+        padding: 5px 4px 2px 5px;
+        background-color: $bg-color-4;
     }
     input {
         @extend %inset;
@@ -65,8 +69,9 @@
         flex: 1;
 
         display: flex;
-        flex-direction: column;
+        font-size: smaller;
         align-items: center;
+        flex-direction: column;
 
         > div:nth-child(1) { flex: 1; }
         > div:nth-child(2) { color: $bg-color-5; }

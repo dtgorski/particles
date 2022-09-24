@@ -1,6 +1,6 @@
 import { Pulse } from "@/model";
-import { DrawGroup, Particle } from "@/Driver";
-import { randIntExc } from "@/random";
+import { DrawGroup, Particle } from "@/engine/Driver";
+import { randIntExc } from "@/util";
 
 export class Universe {
 

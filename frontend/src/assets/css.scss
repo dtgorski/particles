@@ -18,6 +18,7 @@ $border-color-pri: #111;
 $border-color-sec: #444;
 
 %text-shadow { text-shadow: 1px 1px $bg-color-0; }
+%box-shadow { box-shadow: $bg-color-2 4px 4px 16px; }
 
 %inset {
     border-style: solid;
@@ -66,49 +67,49 @@ body {
 
 fieldset {
     @extend %outset;
-    border-radius: 4px 4px 5px 5px;
     margin-bottom: 12px;
     background-color: $bg-color-3;
+    border-radius: 4px 4px 5px 5px;
 
     legend {
-        border-radius: 4px;
         padding: 2px 8px;
         color: $color-sec;
+        border-radius: 4px;
         font-size: smaller;
-        background-color: $bg-color-2;
         @extend %text-shadow;
+        background-color: $bg-color-2;
     }
+}
+
+a {
+    text-decoration: none;
+
+    &:hover { color: $color-hover !important; }
+    &:active { color: $color-active !important;; }
+    &:visited, &:link { color: inherit }
 }
 
 .icon-button, .action-button {
-    padding: 0;
     margin: 0;
     border: 0;
-    border-radius: 2px;
+    padding: 0;
     color: $color-pri;
+    border-radius: 2px;
     background-color: transparent;
+    filter: drop-shadow(1px 1px 0 $bg-color-0);
 
-    &:hover {
-        background-color: $color-hover;
-    }
-    &:active {
-        background-color: $color-active;
-        > svg { color: #fff; }
-    }
+    &:hover { background-color: $color-hover; }
+    &:active { background-color: $color-active; }
 }
+
 .icon-button {
-    > svg {
-        height: 24px;
-        width: 24px;
-        filter: drop-shadow(1px 1px 0 $bg-color-0);
-    }
+    max-height: 24px;
+    > svg { height: 24px; width: 24px; }
 }
+
 .action-button {
-    > svg {
-        height: 32px;
-        width: 32px;
-        filter: drop-shadow(1px 1px 0 $bg-color-0);
-    }
+    max-height: 48px;
+    > svg { height: 32px; width: 32px;}
 }
 
 .disabled {

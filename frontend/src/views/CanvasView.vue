@@ -23,6 +23,8 @@
     export default defineComponent({
         methods: {
             click: (e: PointerEvent) => {
+                if (!model.running) { return; }
+
                 const { canvas } = canvasAndCtx();
                 const rect = canvas.getBoundingClientRect();
 
@@ -50,6 +52,7 @@
         width: 100%;
         height: 100%;
         background-color: $bg-color-0;
+        border-radius: 4px;
     }
 }
 </style>

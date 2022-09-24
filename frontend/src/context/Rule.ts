@@ -1,10 +1,5 @@
-// Due to the Reactivity of Vue 3 it is (AFAIK) not possible to
-// observe a class instance properly and using its methods.
-// Since we have no objects in the reactive model, we collect
-// the object methods externally. The fubar smell is strong here.
-
-import { Group, GroupCtx } from "@/model/GroupCtx";
-import { randId, random } from "@/random";
+import { Group, GroupCtx } from "@/context/Group";
+import { randId, random } from "@/util";
 
 export type Rule = {
     id: string,
@@ -39,8 +34,8 @@ export const RuleCtx = {
     },
 
     createRandomRule: (groups: Group[]): Rule | undefined => {
-        const groupA = GroupCtx.pickRandomGroup(groups);
-        const groupB = GroupCtx.pickRandomGroup(groups);
+        const groupA = GroupCtx.getActiveGroupByRandom(groups);
+        const groupB = GroupCtx.getActiveGroupByRandom(groups);
 
         return groupA && groupB ? <Rule>{
             id: randId(),
@@ -54,5 +49,4 @@ export const RuleCtx = {
     randomGravity: (): number => {
         return Math.floor((random() - 0.5) * 100) / 100;
     }
-
 };

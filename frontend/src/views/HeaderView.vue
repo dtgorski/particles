@@ -23,15 +23,21 @@
 <script lang="ts">
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
-    import { Driver } from "@/Driver";
-    import { Engine } from "@/Engine";
+    import { Driver } from "@/engine/Driver";
+    import { Engine } from "@/engine/Engine";
     import { model } from "@/model";
-    import { Universe } from "@/Universe";
+    import { Universe } from "@/engine/Universe";
 
     let engine: Engine;
 
-    const start /*  */ = () => { engine?.start(); model.running = running(); };
-    const stop /*   */ = () => { engine?.stop();  model.running = running(); };
+    const start /*  */ = () => {
+        engine?.start();
+        model.running = running();
+    };
+    const stop /*   */ = () => {
+        engine?.stop();
+        model.running = running();
+    };
     const running /**/ = () => { return engine?.running(); };
     const restart /**/ = () => {
         stop();
@@ -65,8 +71,8 @@
     display: flex;
 
     #buttons {
-        display: flex;
         gap: 8px;
+        display: flex;
         flex-grow: 1;
         justify-content: flex-start;
 
@@ -78,8 +84,8 @@
     }
     #logo {
         > div:nth-child(2) {
-            display: flex;
             gap: 2px;
+            display: flex;
             justify-content: center;
         }
     }

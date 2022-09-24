@@ -1,4 +1,4 @@
-import { Driver } from "@/Driver";
+import { Driver } from "@/engine/Driver";
 
 export class Engine {
 
@@ -38,7 +38,7 @@ export class Engine {
     private drawParticle = (x: number, y: number, r: number, c: string) => {
         this.ctx.fillStyle = c;
         this.ctx.beginPath();
-        this.ctx.arc(x, y, r / 2, 0, 6.283185307179586);
+        this.ctx.arc(x, y, r / 2, 0, 2 * Math.PI);
         this.ctx.fill();
     }
 

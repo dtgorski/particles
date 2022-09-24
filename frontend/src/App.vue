@@ -73,17 +73,14 @@
 
 #github {
     position: fixed;
-    top: 20px;
-    right: 5px;
+    top: 22px;
+    right: 2px;
     transform: rotate(45deg);
 
     a {
-        text-decoration: none;
-        &:visited, &:hover, &:active, &:link {
-            color: $color-pri;
-            font-weight: bold;
-            opacity: 0.6;
-        }
+        color: $color-pri;
+        font-size: larger;
+        opacity: 0.6;
     }
 }
 </style>
