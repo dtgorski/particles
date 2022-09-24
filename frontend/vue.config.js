@@ -1,4 +1,4 @@
-const { defineConfig } = require('@vue/cli-service');
+const { defineConfig } = require("@vue/cli-service");
 
 module.exports = defineConfig({
     productionSourceMap: false,
@@ -7,5 +7,8 @@ module.exports = defineConfig({
         config.performance
             .maxEntrypointSize(1024 * 1024)
             .maxAssetSize(1024 * 1024);
-    }
+        // config
+        //     .plugin("webpack-bundle-analyzer")
+        //     .use(require("webpack-bundle-analyzer").BundleAnalyzerPlugin);
+    },
 });
