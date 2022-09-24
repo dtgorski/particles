@@ -32,6 +32,6 @@
 
 #speed-edit {
     padding: 16px;
-    * { cursor: pointer !important; }
+    * { cursor: default !important; }
 }
 </style>
