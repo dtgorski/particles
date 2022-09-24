@@ -89,7 +89,7 @@
     const reactivateRules = (group: Group) => {
         for (let i = 0; i < model.rules.length; i++) {
             if (RuleCtx.hasActor(model.rules[i], group.id)) {
-                const [ actorA, actorB ] = RuleCtx.getActors(model.rules[i]);
+                const [ actorA, actorB ] = RuleCtx.actors(model.rules[i]);
 
                 const groupA = GroupCtx.getGroupById(model.groups, actorA.groupId);
                 const groupB = GroupCtx.getGroupById(model.groups, actorB.groupId);
@@ -137,15 +137,22 @@
             picked: (color: ColorData) => {
                 const group = GroupCtx.getGroupById(model.groups, model.picker.groupId);
                 if (!group) { return; }
+
                 GroupCtx.setGroupColor(group, color);
             }
         },
-        mounted: () => { on(document.body, "click", pickerClicker); },
-        unmounted: () => { un(document.body, "click", pickerClicker); },
+        mounted: () => {
+            on(document.body, "click", resetPicker);
+            on(window, "resize", resetPicker);
+        },
+        unmounted: () => {
+            un(document.body, "click", resetPicker);
+            un(window, "resize", resetPicker);
+        },
         setup: () => { return model; },
     });
 
-    const pickerClicker = () => { model.picker = PickerCtx.createNullPicker(); };
+    const resetPicker = () => { model.picker = PickerCtx.createNullPicker(); return true; };
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -33,7 +33,7 @@ export const GroupCtx = {
     },
 
     // Returns undefined when no group is active.
-    getActiveGroupByRandom: (groups: Group[]): Group | undefined => {
+    pickRandomActiveGroup: (groups: Group[]): Group | undefined => {
         const active: number[] = [];
         for (let i = 0; i < groups.length; i++) {
             groups[i].active ? active.push(i) : null;
@@ -49,6 +49,7 @@ export const GroupCtx = {
         group.label = ColorCtx.createLabel(color.name, color.shade);
     },
 
+    // Random group is active by default.
     createRandomGroup: (burnedColorNames?: string[]): Group => {
         let color;
         do color = ColorCtx.createRandom(); while (burnedColorNames?.includes(color.name));

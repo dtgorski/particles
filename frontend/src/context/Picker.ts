@@ -1,4 +1,4 @@
-import { GroupId, } from "@/context/Group";
+import { GroupId } from "@/context/Group";
 
 export type Picker = {
     active: boolean

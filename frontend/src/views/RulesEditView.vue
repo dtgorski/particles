@@ -126,7 +126,7 @@
             },
             toggle: (index: number) => {
                 if (!model.rules[index].active) {
-                    const [ a, b ] = RuleCtx.getActors(model.rules[index]);
+                    const [ a, b ] = RuleCtx.actors(model.rules[index]);
                     const groupA = GroupCtx.getGroupById(model.groups, a.groupId);
                     const groupB = GroupCtx.getGroupById(model.groups, b.groupId);
 

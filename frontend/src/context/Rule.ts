@@ -15,7 +15,7 @@ export type Actor = {
 
 export const RuleCtx = {
 
-    getActors: (rule: Rule): [ Actor, Actor ] => {
+    actors: (rule: Rule): [ Actor, Actor ] => {
         return [ rule.actorA, rule.actorB ];
     },
 
@@ -34,8 +34,8 @@ export const RuleCtx = {
     },
 
     createRandomRule: (groups: Group[]): Rule | undefined => {
-        const groupA = GroupCtx.getActiveGroupByRandom(groups);
-        const groupB = GroupCtx.getActiveGroupByRandom(groups);
+        const groupA = GroupCtx.pickRandomActiveGroup(groups);
+        const groupB = GroupCtx.pickRandomActiveGroup(groups);
 
         return groupA && groupB ? <Rule>{
             id: randId(),

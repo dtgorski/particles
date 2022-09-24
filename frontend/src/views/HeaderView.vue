@@ -30,19 +30,21 @@
 
     let engine: Engine;
 
-    const start /*  */ = () => {
+    const start = () => {
         engine?.start();
         model.running = running();
     };
-    const stop /*   */ = () => {
+    const stop = () => {
         engine?.stop();
         model.running = running();
     };
-    const running /**/ = () => { return engine?.running(); };
-    const restart /**/ = () => {
+    const restart = () => {
         stop();
         engine = createEngine(document.getElementById("canvas"));
         start();
+    };
+    const running = () => {
+        return engine?.running();
     };
 
     const createEngine = (elm: HTMLElement | null): Engine => {
