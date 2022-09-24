@@ -1,13 +1,16 @@
 <template>
     <div id="editor-view">
-        <DistanceEditView />
+        <div>
+            <DistanceEditView />
+            <SpeedEditView />
+        </div>
         <GroupsEditView />
         <RulesEditView />
         <div>
             <div></div>
             <div>
                 <a href="https://github.com/dtgorski/particles" target="_blank">
-                    Copyright © Daniel T. Gorski · dtg [at] lengo [dot] org
+                    Daniel T. Gorski · dtg [at] lengo [dot] org
                 </a>
             </div>
         </div>
@@ -21,10 +24,12 @@
     import GroupsEditView from "@/views/GroupsEditView.vue";
     import RulesEditView from "@/views/RulesEditView.vue";
     import DistanceEditView from "@/views/DistanceEditView.vue";
+    import SpeedEditView from "@/views/SpeedEditView.vue";
 
     export default defineComponent({
         components: {
             DistanceEditView,
+            SpeedEditView,
             GroupsEditView,
             RulesEditView,
         }
@@ -63,6 +68,11 @@
 
     input[type=number] {
         text-align: center;
+    }
+
+    > div:first-child {
+        display: flex;
+        * { flex: 1 }
     }
 
     > div:last-child {

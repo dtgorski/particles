@@ -1,10 +1,10 @@
 <template>
-    <fieldset id="distance-edit">
-        <legend>Force distance</legend>
+    <fieldset id="speed-edit">
+        <legend>Speed factor</legend>
         <Slider
-            v-model=distance
-            :min=1
-            :max="Math.ceil(Math.sqrt(aspect.w*aspect.w + aspect.h*aspect.h))"
+            v-model=speed
+            :min=0
+            :max=100
             :tooltips=false
             :options="{ animate: false }"
         />
@@ -30,7 +30,7 @@
 <style lang="scss">
 @import "@/assets/css.scss";
 
-#distance-edit {
+#speed-edit {
     padding: 16px;
     * { cursor: pointer !important; }
 }

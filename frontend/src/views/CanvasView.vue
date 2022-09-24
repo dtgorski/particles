@@ -9,6 +9,7 @@
 <script lang="ts">
     import { defineComponent } from "vue";
     import { model } from "@/model";
+    import { PulseCtx } from "@/context/Pulse";
 
     const canvasAndCtx = (): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -28,11 +29,11 @@
                 const { canvas } = canvasAndCtx();
                 const rect = canvas.getBoundingClientRect();
 
-                model.pulse = {
-                    x: (e.clientX - rect.left) * (canvas.width / rect.width),
-                    y: (e.clientY - rect.top) * (canvas.height / rect.height),
-                    g: 30
-                };
+                model.pulse = PulseCtx.createPulse(
+                    (e.clientX - rect.left) * (canvas.width / rect.width),
+                    (e.clientY - rect.top) * (canvas.height / rect.height),
+                    30
+                );
             },
         },
         setup: () => { return model; },

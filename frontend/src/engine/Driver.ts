@@ -1,7 +1,7 @@
-import { Model, Pulse } from "@/model";
+import { Model } from "@/model";
 import { toRaw } from "vue";
 import { GroupCtx } from "@/context/Group";
-import { Universe } from "@/engine/Universe";
+import { Universe, Variables } from "@/engine/Universe";
 
 export type Particle = {
     x: number
@@ -99,22 +99,25 @@ export class Driver {
             };
         }
 
-        this.apply(model.distance, model.pulse);
-        this.model.pulse = undefined;
+        this.applyRules();
+        this.model.pulse.x = -1;
     }
 
-    private apply(distance: number, pulse: Pulse | undefined): void {
+    private applyRules(): void {
         const rules = toRaw(this.model.rules);
 
         for (let i = 0; i < rules.length; i++) {
             const rule = rules[i];
             if (!rule.active) { continue; }
 
-            const drawGroupA: DrawGroup = this.map[rule.actorA.groupId];
-            const drawGroupB: DrawGroup = this.map[rule.actorB.groupId];
-            const gravity = rule.gravity;
-
-            this.universe.calculate(drawGroupA, drawGroupB, pulse, gravity, distance);
+            this.universe.calculate(<Variables>{
+                groupA: this.map[rule.actorA.groupId],
+                groupB: this.map[rule.actorB.groupId],
+                gravity: rule.gravity,
+                pulse: this.model.pulse,
+                speed: this.model.speed,
+                distance: this.model.distance
+            });
         }
     }
 }

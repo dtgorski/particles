@@ -1,6 +1,15 @@
-import { Pulse } from "@/model";
 import { DrawGroup, Particle } from "@/engine/Driver";
 import { randIntExc } from "@/util";
+import { Pulse } from "@/context/Pulse";
+
+export type Variables = {
+    groupA: DrawGroup,
+    groupB: DrawGroup,
+    pulse: Pulse,
+    gravity: number,
+    distance: number,
+    speed: number
+}
 
 export class Universe {
 
@@ -18,9 +27,9 @@ export class Universe {
         };
     }
 
-    calculate(groupA: DrawGroup, groupB: DrawGroup, pulse: Pulse | undefined, g: number, d: number): void {
-        const particlesA = groupA.particles;
-        const particlesB = groupB.particles;
+    calculate(v: Variables): void {
+        const particlesA = v.groupA.particles;
+        const particlesB = v.groupB.particles;
 
         for (let i = 0; i < particlesA.length; i++) {
             const pA = particlesA[i];
@@ -33,20 +42,19 @@ export class Universe {
                 const dy = pA.y - pB.y;
                 const r = Math.sqrt(dx * dx + dy * dy);
 
-                if (r > 0 && r <= d) {
-                    const f = g / r;
-                    // const f = g * ((groupA.mass * groupB.mass) / (r*r));
-                    fx += f * dx * 0.1;
-                    fy += f * dy * 0.1;
+                if (r > 0 && r <= v.distance) {
+                    const f = v.gravity / r;
+                    fx += f * dx * (v.speed / 200);
+                    fy += f * dy * (v.speed / 200);
                 }
             }
 
-            if (pulse && pulse.x >= 0 && pulse.y >= 0) {
-                const dx = pA.x - pulse.x;
-                const dy = pA.y - pulse.y;
+            if (v.pulse && v.pulse.x >= 0 && v.pulse.y >= 0) {
+                const dx = pA.x - v.pulse.x;
+                const dy = pA.y - v.pulse.y;
                 const r = Math.sqrt(dx * dx + dy * dy);
-                if (r > 0 && r <= d) {
-                    const f = pulse.g / r;
+                if (r > 0 && r <= v.distance) {
+                    const f = v.pulse.g / r;
                     fx += f * dx;
                     fy += f * dy;
                 }
