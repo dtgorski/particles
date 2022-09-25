@@ -133,26 +133,41 @@
                 model.picker = PickerCtx.createPicker(groupId);
                 picker.style.left = (e.clientX - 8) + "px";
                 picker.style.top = (e.clientY - 8) + "px";
+
+                enablePicker();
             },
             picked: (color: ColorData) => {
                 const group = GroupCtx.getGroupById(model.groups, model.picker.groupId);
-                if (!group) { return; }
+                disablePicker();
 
-                GroupCtx.setGroupColor(group, color);
+                if (group) {
+                    GroupCtx.setGroupColor(group, color);
+                }
+
             }
         },
-        mounted: () => {
-            on(document.body, "click", resetPicker);
-            on(window, "resize", resetPicker);
-        },
-        unmounted: () => {
-            un(document.body, "click", resetPicker);
-            un(window, "resize", resetPicker);
-        },
+        // mounted: () => {
+        //     on(document.body, "click", resetPicker);
+        //     on(window, "resize", resetPicker);
+        // },
+        // unmounted: () => {
+        //     un(document.body, "click", resetPicker);
+        //     un(window, "resize", resetPicker);
+        // },
         setup: () => { return model; },
     });
 
-    const resetPicker = () => { model.picker = PickerCtx.createNullPicker(); return true; };
+    const enablePicker = () => {
+        on(document.body, "click", disablePicker);
+        on(window, "resize", disablePicker);
+    };
+
+    const disablePicker = (): boolean => {
+        un(document.body, "click", disablePicker);
+        un(window, "resize", disablePicker);
+        model.picker = PickerCtx.createNullPicker();
+        return true;
+    };
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -57,7 +57,7 @@ export class Universe {
                 const dx = pA.x - v.pulse.x;
                 const dy = pA.y - v.pulse.y;
                 const r = Math.sqrt(dx * dx + dy * dy);
-                if (r >= 1 && r <= v.distance) {
+                if (r > 0 && r <= v.distance) {
                     const f = v.pulse.g / r;
                     fx += f * dx;
                     fy += f * dy;
@@ -65,15 +65,16 @@ export class Universe {
             }
 
             // @formatter:off
-            const b = -1;
-            if (pA.x < 0)       { pA.vx *= b; pA.x = -pA.x; }
-            if (pA.x >= this.w) { pA.vx *= b; pA.x = 2 * this.w - pA.x; }
-            if (pA.y < 0)       { pA.vy *= b; pA.y = -pA.y; }
-            if (pA.y >= this.h) { pA.vy *= b; pA.y = 2 * this.h - pA.y; }
+            const bounce = -1;
+            if (pA.x < 0)       { pA.vx *= bounce; pA.x = -pA.x; }
+            if (pA.x >= this.w) { pA.vx *= bounce; pA.x = 2 * this.w - pA.x; }
+            if (pA.y < 0)       { pA.vy *= bounce; pA.y = -pA.y; }
+            if (pA.y >= this.h) { pA.vy *= bounce; pA.y = 2 * this.h - pA.y; }
             // @formatter:on
 
-            pA.vx = (pA.vx + fx) * 0.5;
-            pA.vy = (pA.vy + fy) * 0.5;
+            const deflate = 0.5;
+            pA.vx = (pA.vx + fx) * deflate;
+            pA.vy = (pA.vy + fy) * deflate;
 
             pA.x += pA.vx;
             pA.y += pA.vy;

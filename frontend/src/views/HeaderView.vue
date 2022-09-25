@@ -1,18 +1,26 @@
 <template>
     <div id="header-view">
         <div id="buttons">
-            <button class="action-button" title="Pause" @click=stop v-show="running === true">
+            <button class="action-button" title="Pause" @click=stopEngine v-show="running === true">
                 <Icon icon="mdi:pause" />
             </button>
-            <button class="action-button" title="Play" @click=start v-show="running === false">
+            <button class="action-button" title="Play" @click=startEngine v-show="running === false">
                 <Icon icon="mdi:play" />
             </button>
-            <button class="action-button" title="Restart" @click=restart>
+            <button class="action-button" title="Restart" @click=restartEngine>
                 <Icon icon="mdi:reload" />
             </button>
+            <!--
+            <button class="action-button" title="Export" @click=exportModel>
+                <Icon icon="mdi:export" />
+            </button>
+            <button class="action-button" title="Import" @click=importModel>
+                <Icon icon="mdi:import" />
+            </button>
+            -->
         </div>
         <div id="logo">
-            <div><img src="@/assets/logo.png" alt="particles" width="132" height="50" /></div>
+            <div><img src="@/assets/logo.png" alt="particles" width="132" height="48" /></div>
             <div>particles</div>
         </div>
     </div>
@@ -30,20 +38,20 @@
 
     let engine: Engine;
 
-    const start = () => {
+    const startEngine = () => {
         engine?.start();
-        model.running = running();
+        model.running = engineRunning();
     };
-    const stop = () => {
+    const stopEngine = () => {
         engine?.stop();
-        model.running = running();
+        model.running = engineRunning();
     };
-    const restart = () => {
-        stop();
+    const restartEngine = () => {
+        stopEngine();
         engine = createEngine(document.getElementById("canvas"));
-        start();
+        startEngine();
     };
-    const running = () => {
+    const engineRunning = () => {
         return engine?.running();
     };
 
@@ -56,10 +64,13 @@
         return new Engine(canvas, driver);
     };
 
+    const exportModel = () => { /**/ };
+    const importModel = () => { /**/ };
+
     export default defineComponent({
         components: { Icon },
-        methods: { start, stop, running, restart },
-        mounted() { restart(); },
+        methods: { startEngine, stopEngine, engineRunning, restartEngine, exportModel, importModel },
+        mounted() { restartEngine(); },
         setup: () => { return model; },
     });
 </script>
