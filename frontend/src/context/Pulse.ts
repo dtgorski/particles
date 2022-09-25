@@ -1,5 +1,3 @@
-import { GroupId } from "@/context/Group";
-
 export type Pulse = {
     x: number
     y: number

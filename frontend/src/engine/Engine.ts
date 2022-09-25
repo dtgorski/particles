@@ -37,7 +37,7 @@ export class Engine {
 
     private drawParticle = (x: number, y: number, r: number, c: string) => {
         this.ctx.fillStyle = c;
-        this.ctx.shadowColor = "#000000";
+        this.ctx.shadowColor = "#010101";
         this.ctx.shadowBlur = 1;
         this.ctx.beginPath();
         this.ctx.arc(x, y, r / 2, 0, 2 * Math.PI);
