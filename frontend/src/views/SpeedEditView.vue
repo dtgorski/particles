@@ -2,7 +2,7 @@
     <fieldset id="speed-edit">
         <legend>Speed factor</legend>
         <Slider
-            v-model=speed
+            v-model=factor
             :min=0
             :max=100
             :tooltips=false

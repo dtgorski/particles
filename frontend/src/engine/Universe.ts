@@ -46,7 +46,7 @@ export class Universe {
                 const dy = pA.y - pB.y;
                 const r = Math.sqrt(dx * dx + dy * dy);
 
-                if (r > 0 && r <= v.distance) {
+                if (r >= 1 && r <= v.distance) {
                     const f = v.gravity / r;
                     fx += f * dx * factor();
                     fy += f * dy * factor();
@@ -57,7 +57,7 @@ export class Universe {
                 const dx = pA.x - v.pulse.x;
                 const dy = pA.y - v.pulse.y;
                 const r = Math.sqrt(dx * dx + dy * dy);
-                if (r > 0 && r <= v.distance) {
+                if (r >= 1 && r <= v.distance) {
                     const f = v.pulse.g / r;
                     fx += f * dx;
                     fy += f * dy;

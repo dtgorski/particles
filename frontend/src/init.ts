@@ -27,7 +27,7 @@ rules.forEach((_, i) => { rules[i].gravity = i % 2 ? Math.abs(rules[i].gravity) 
 export const initial: Required<Model> = {
     aspect: { w: 1024, h: 1024 },
     distance: 256,
-    speed: 20,
+    factor: 20,
     running: true,
     groups: groups,
     rules: rules,

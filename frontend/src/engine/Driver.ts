@@ -115,7 +115,7 @@ export class Driver {
                 groupB: this.map[rule.actorB.groupId],
                 gravity: rule.gravity,
                 pulse: this.model.pulse,
-                factor: this.model.speed,
+                factor: this.model.factor,
                 distance: this.model.distance
             });
         }

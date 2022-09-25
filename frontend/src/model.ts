@@ -13,7 +13,7 @@ export type Aspect = {
 export type Model = {
     aspect: Aspect,
     distance: number
-    speed: number
+    factor: number
     running: boolean
     groups: Group[]
     rules: Rule[],
