@@ -1,10 +1,10 @@
 <template>
-    <fieldset id="distance-edit">
-        <legend>Force distance</legend>
+    <fieldset id="excitation">
+        <legend>Excitation</legend>
         <Slider
-            v-model=distance
+            v-model=excitation
             :min=1
-            :max="Math.ceil(Math.sqrt(aspect.w*aspect.w + aspect.h*aspect.h))"
+            :max=99
             :tooltips=false
             :options="{ animate: false }"
         />
@@ -14,13 +14,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-    import { defineComponent } from "vue";
-    import { model } from "@/model";
     import Slider from "@vueform/slider";
+    import { defineComponent } from "vue";
 
+    import { model } from "@/model";
     export default defineComponent({
         components: { Slider },
-        methods: {},
         setup: () => { return model; },
     });
 </script>
@@ -30,7 +29,7 @@
 <style lang="scss">
 @import "@/assets/css.scss";
 
-#distance-edit {
+#excitation {
     padding: 16px;
     * { cursor: default !important; }
 }

@@ -1,7 +1,8 @@
-import { Model } from "@/model";
 import { toRaw } from "vue";
+
 import { GroupCtx } from "@/context/Group";
 import { Universe, Variables } from "@/engine/Universe";
+import { Model } from "@/model";
 
 export type Particle = {
     x: number
@@ -115,8 +116,9 @@ export class Driver {
                 groupB: this.map[rule.actorB.groupId],
                 gravity: rule.gravity,
                 pulse: this.model.pulse,
-                factor: this.model.factor,
-                distance: this.model.distance
+                distance: this.model.distance,
+                excitation: this.model.excitation,
+                attenuation: this.model.attenuation,
             });
         }
     }

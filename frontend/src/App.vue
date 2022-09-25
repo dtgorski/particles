@@ -1,10 +1,10 @@
 <template>
     <div id="arena">
-        <CanvasView />
+        <PanelCanvas />
     </div>
     <div id="sidebar">
-        <HeaderView />
-        <EditorView />
+        <PanelHeader />
+        <PanelEditor />
     </div>
     <div id="github">
         <a href="https://github.com/dtgorski/particles" target="_blank" title="Source on GitHub">GitHub</a>
@@ -15,15 +15,16 @@
 
 <script lang="ts">
     import { defineComponent } from "vue";
-    import CanvasView from "@/views/CanvasView.vue";
-    import EditorView from "@/views/EditorView.vue";
-    import HeaderView from "@/views/HeaderView.vue";
+
+    import PanelCanvas from "@/views/PanelCanvas.vue";
+    import PanelEditor from "@/views/PanelEditor.vue";
+    import PanelHeader from "@/views/PanelHeader.vue";
 
     export default defineComponent({
         components: {
-            HeaderView,
-            CanvasView,
-            EditorView
+            PanelCanvas,
+            PanelHeader,
+            PanelEditor
         },
     });
 </script>
@@ -34,28 +35,28 @@
 @import "@/assets/css.scss";
 
 #app {
-    width: 100vw;
-    height: 100vh;
+    background: repeating-linear-gradient(0deg, $bg-color-0 0, $bg-color-0 1px, transparent 2px, transparent 2px);
     display: flex;
     flex-flow: nowrap;
     gap: 8px;
+    height: 100vh;
     justify-content: center;
-    padding: 8px;
     overflow-y: hidden;
-    background: repeating-linear-gradient(0deg, $bg-color-0 0, $bg-color-0 1px, transparent 2px, transparent 2px);
+    padding: 8px;
+    width: 100vw;
 }
 
 #sidebar {
     @extend %outset;
+    background-image: linear-gradient(to right, rgb($bg-color-2, 100%), rgb($bg-color-2, 0%));
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    max-height: 100vh;
+    max-width: 460px;
+    overflow-y: hidden;
     padding-top: 4px;
     width: 460px;
-    max-width: 460px;
-    max-height: 100vh;
-    overflow-y: hidden;
-    background-image: linear-gradient(to right, rgb($bg-color-2, 100%), rgb($bg-color-2, 0%));
 
     > div:first-child {
         padding: 4px 8px 8px 8px;
@@ -67,14 +68,14 @@
 
 #arena {
     display: flex;
-    height: 100%;
     gap: 8px;
+    height: 100%;
 }
 
 #github {
     position: fixed;
-    top: 22px;
     right: 2px;
+    top: 22px;
     transform: rotate(45deg);
 
     a {

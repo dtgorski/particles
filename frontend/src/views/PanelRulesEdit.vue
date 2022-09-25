@@ -104,9 +104,10 @@
 <script lang="ts">
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
-    import { model } from "@/model";
-    import { GroupCtx, Group, GroupId } from "@/context/Group";
+
+    import { Group, GroupCtx, GroupId } from "@/context/Group";
     import { RuleCtx } from "@/context/Rule";
+    import { model } from "@/model";
 
     export default defineComponent({
         components: { Icon },
@@ -169,11 +170,11 @@ fieldset {
         justify-content: flex-end;
 
         > div {
-            margin: 0 2px;
+            @extend %text-shadow;
             color: $color-pri;
             font-size: smaller;
+            margin: 0 2px;
             text-align: center;
-            @extend %text-shadow;
         }
 
         > div:nth-child(1) { flex: 0; min-width: 24px; margin-left: 0; }
@@ -193,21 +194,21 @@ fieldset {
     }
 
     option {
-        padding: 2px;
-        font-size: small;
-        line-height: 125%;
         @extend %text-shadow;
         background: $bg-color-3;
+        font-size: small;
+        line-height: 125%;
+        padding: 2px;
 
         &:disabled {
-            color: #999;
             background: $bg-color-4;
+            color: #999;
         }
     }
 
     input[type=number] {
-        text-align: right !important;
         font-family: monospace;
+        text-align: right !important;
     }
 }
 </style>

@@ -20,6 +20,7 @@
         "@vueform/slider": "^2.1.2",
         "core-js": "^3.8.3",
         "eslint": "^7.32.0",
+        "eslint-plugin-simple-import-sort": "^8.0.0",
         "eslint-plugin-vue": "^8.0.3",
         "sass": "^1.32.7",
         "sass-loader": "^12.0.0",

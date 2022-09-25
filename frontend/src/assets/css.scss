@@ -67,17 +67,17 @@ body {
 
 fieldset {
     @extend %outset;
-    margin-bottom: 12px;
     background-color: $bg-color-3;
     border-radius: 4px 4px 5px 5px;
+    margin-bottom: 12px;
 
     legend {
-        padding: 2px 8px;
-        color: $color-sec;
-        border-radius: 4px;
-        font-size: smaller;
         @extend %text-shadow;
         background-color: $bg-color-2;
+        border-radius: 4px;
+        color: $color-sec;
+        font-size: smaller;
+        padding: 2px 8px;
     }
 }
 
@@ -90,13 +90,13 @@ a {
 }
 
 .icon-button, .action-button {
-    margin: 0;
-    border: 0;
-    padding: 0;
-    color: $color-pri;
-    border-radius: 2px;
     background-color: transparent;
+    border-radius: 2px;
+    border: 0;
+    color: $color-pri;
     filter: drop-shadow(1px 1px 0 $bg-color-0);
+    margin: 0;
+    padding: 0;
 
     &:hover { background-color: $color-hover; }
     &:active { background-color: $color-active; }
@@ -113,6 +113,6 @@ a {
 }
 
 .disabled {
-    pointer-events: none;
     opacity: 0.5;
+    pointer-events: none;
 }

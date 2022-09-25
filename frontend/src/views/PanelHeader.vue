@@ -1,5 +1,5 @@
 <template>
-    <div id="header-view">
+    <div id="header">
         <div id="buttons">
             <button class="action-button" title="Pause" @click=stopEngine v-show="running === true">
                 <Icon icon="mdi:pause" />
@@ -31,10 +31,11 @@
 <script lang="ts">
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
+
     import { Driver } from "@/engine/Driver";
     import { Engine } from "@/engine/Engine";
-    import { model } from "@/model";
     import { Universe } from "@/engine/Universe";
+    import { model } from "@/model";
 
     let engine: Engine;
 
@@ -80,25 +81,25 @@
 <style scoped lang="scss">
 @import "@/assets/css.scss";
 
-#header-view {
+#header {
     display: flex;
 
     #buttons {
-        gap: 8px;
         display: flex;
         flex-grow: 1;
+        gap: 8px;
         justify-content: flex-start;
 
         button {
-            width: 48px;
-            height: 48px;
             @extend %outset;
+            height: 48px;
+            width: 48px;
         }
     }
     #logo {
         > div:nth-child(2) {
-            gap: 2px;
             display: flex;
+            gap: 2px;
             justify-content: center;
         }
     }

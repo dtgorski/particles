@@ -68,7 +68,9 @@ export class Engine {
         }
 
         if (this.running()) {
-            this.driver.commit(this.updateCanvas.bind(this));
+            this.driver.commit(
+                this.updateCanvas.bind(this)
+            );
         }
     }
 }

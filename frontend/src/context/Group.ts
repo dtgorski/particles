@@ -1,12 +1,12 @@
-import { randIntExc, randIntInc, randId } from "@/util";
 import { ColorCtx, ColorData } from "@/context/Color";
+import { randId,randIntExc, randIntInc } from "@/util";
 
 export type Group = {
-    id: GroupId,
-    label: string,
     active: boolean,
     colorName: string,
     colorValue: string,
+    id: GroupId,
+    label: string,
     particleCount: number,
     particleMass: number,
     particleSize: number,
@@ -56,14 +56,14 @@ export const GroupCtx = {
         const label = ColorCtx.createLabel(color.name, color.shade);
 
         return <Group>{
-            id: randId(),
             active: true,
-            label: label,
             colorName: color.name,
             colorValue: color.value,
+            id: randId(),
+            label: label,
             particleCount: randIntInc(30, 60) * 10,
+            particleMass: 1,
             particleSize: randIntInc(2, 4),
-            particleMass: 1
         };
     }
 };

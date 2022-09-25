@@ -14,9 +14,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-    import { defineComponent } from "vue";
-    import { colors, ColorData } from "@/context/Color";
     import { Icon } from "@iconify/vue";
+    import { defineComponent } from "vue";
+
+    import { ColorData,colors } from "@/context/Color";
 
     export default defineComponent({
         components: { Icon },
@@ -34,14 +35,14 @@
 @import "@/assets/css.scss";
 
 #picker {
-    z-index: 999;
-    display: flex;
-    position: fixed;
-    border-radius: 4px;
     @extend %box-shadow;
+    background-color: $bg-color-5;
+    border-radius: 4px;
+    display: flex;
     flex-direction: column;
     padding: 8px 8px 6px 8px;
-    background-color: $bg-color-5;
+    position: fixed;
+    z-index: 1;
 
     > div {
         display: flex;

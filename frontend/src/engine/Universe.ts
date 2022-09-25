@@ -1,6 +1,6 @@
+import { Pulse } from "@/context/Pulse";
 import { DrawGroup, Particle } from "@/engine/Driver";
 import { randIntExc } from "@/util";
-import { Pulse } from "@/context/Pulse";
 
 export type Variables = {
     groupA: DrawGroup,
@@ -8,7 +8,8 @@ export type Variables = {
     pulse: Pulse,
     gravity: number,
     distance: number,
-    factor: number
+    excitation: number,
+    attenuation: number
 }
 
 export class Universe {
@@ -30,10 +31,8 @@ export class Universe {
     calculate(v: Variables): void {
         const particlesA = v.groupA.particles;
         const particlesB = v.groupB.particles;
-
-        const factor = (): number => {
-            return (v.factor / 100)**2;
-        };
+        const excitation = (v.excitation / 100) ** 2;
+        const attenuation = 1 - (v.attenuation / 100);
 
         for (let i = 0; i < particlesA.length; i++) {
             const pA = particlesA[i];
@@ -48,8 +47,8 @@ export class Universe {
 
                 if (r > 0 && r <= v.distance) {
                     const f = v.gravity / r;
-                    fx += f * dx * factor();
-                    fy += f * dy * factor();
+                    fx += f * dx * excitation;
+                    fy += f * dy * excitation;
                 }
             }
 
@@ -72,9 +71,8 @@ export class Universe {
             if (pA.y >= this.h) { pA.vy *= bounce; pA.y = 2 * this.h - pA.y; }
             // @formatter:on
 
-            const deflate = 0.5;
-            pA.vx = (pA.vx + fx) * deflate;
-            pA.vy = (pA.vy + fy) * deflate;
+            pA.vx = (pA.vx + fx) * attenuation;
+            pA.vy = (pA.vy + fy) * attenuation;
 
             pA.x += pA.vx;
             pA.y += pA.vy;

@@ -1,15 +1,15 @@
 import { Group, GroupCtx } from "@/context/Group";
-import { Rule, RuleCtx } from "@/context/Rule";
-import { PulseCtx } from "@/context/Pulse";
 import { PickerCtx } from "@/context/Picker";
+import { PulseCtx } from "@/context/Pulse";
+import { Rule, RuleCtx } from "@/context/Rule";
 import { Model } from "@/model";
 
 export const groups: Group[] = [];
 export const rules: Rule[] = [];
 
 groups.push(GroupCtx.createRandomGroup());
-groups.push(GroupCtx.createRandomGroup([groups[0].colorName]));
-groups.push(GroupCtx.createRandomGroup([groups[0].colorName, groups[1].colorName]));
+groups.push(GroupCtx.createRandomGroup(groups.map(group => group.colorName)));
+groups.push(GroupCtx.createRandomGroup(groups.map(group => group.colorName)));
 
 groups.forEach(group => {
     rules.push(RuleCtx.createRule(group, group, RuleCtx.randomGravity()));
@@ -25,12 +25,13 @@ rules.forEach((_, i) => { rules[i].gravity = i % 2 ? Math.abs(rules[i].gravity) 
 
 // First start setup.
 export const initial: Required<Model> = {
-    aspect: { w: 1024, h: 1024 },
-    distance: 256,
-    factor: 20,
-    running: true,
-    groups: groups,
-    rules: rules,
-    pulse: PulseCtx.createNullPulse(),
-    picker: PickerCtx.createNullPicker()
+    aspect: /*     */ { w: 1024, h: 1024 },
+    attenuation: /**/ 50, // => 0.5
+    distance: /*   */ 256,
+    excitation: /* */ 20, // => 0.2
+    groups: /*     */ groups,
+    picker: /*     */ PickerCtx.createNullPicker(),
+    pulse: /*      */ PulseCtx.createNullPulse(),
+    rules: /*      */ rules,
+    running: /*    */ true,
 };

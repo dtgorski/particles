@@ -1,11 +1,12 @@
 <template>
-    <div id="editor-view">
+    <div id="editor">
         <div>
-            <DistanceEditView />
-            <FactorEditView />
+            <SliderDistance />
+            <SliderExcitation />
+            <SliderAttenuation />
         </div>
-        <GroupsEditView />
-        <RulesEditView />
+        <PanelGroupsEdit />
+        <PanelRulesEdit />
         <div>
             <div></div>
             <div>
@@ -21,17 +22,20 @@
 
 <script lang="ts">
     import { defineComponent } from "vue";
-    import GroupsEditView from "@/views/GroupsEditView.vue";
-    import RulesEditView from "@/views/RulesEditView.vue";
-    import DistanceEditView from "@/views/DistanceEditView.vue";
-    import FactorEditView from "@/views/FactorEditView.vue";
+
+    import PanelGroupsEdit from "@/views/PanelGroupsEdit.vue";
+    import PanelRulesEdit from "@/views/PanelRulesEdit.vue";
+    import SliderAttenuation from "@/views/SliderAttenuation.vue";
+    import SliderDistance from "@/views/SliderDistance.vue";
+    import SliderExcitation from "@/views/SliderExcitation.vue";
 
     export default defineComponent({
         components: {
-            DistanceEditView,
-            FactorEditView,
-            GroupsEditView,
-            RulesEditView,
+            SliderDistance,
+            SliderExcitation,
+            SliderAttenuation,
+            PanelGroupsEdit,
+            PanelRulesEdit,
         }
     });
 </script>
@@ -41,47 +45,41 @@
 <style lang="scss">
 @import "@/assets/css.scss";
 
-#editor-view {
-    height: 100%;
+#editor {
     display: flex;
-    overflow-y: auto;
-    overflow-x: hidden;
     flex-direction: column;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     input, select {
-        width: 100%;
-        color: #fff;
-        border-width: 1px;
-        border-radius: 2px;
-        margin-bottom: 4px;
         @extend %text-shadow;
-        padding: 5px 4px 2px 5px;
         background-color: $bg-color-4;
+        border-radius: 2px;
+        border-width: 1px;
+        color: #fff;
+        margin-bottom: 4px;
+        padding: 5px 4px 2px 5px;
+        width: 100%;
     }
-    input {
-        @extend %inset;
-    }
+    input { @extend %inset; }
+    input[type=number] { text-align: center; }
+
     select {
         @extend %outset;
         padding: 2px;
-    }
-
-    input[type=number] {
-        text-align: center;
     }
 
     > div:first-child {
         display: flex;
         * { flex: 1 }
     }
-
     > div:last-child {
-        flex: 1;
-
-        display: flex;
-        font-size: smaller;
         align-items: center;
+        display: flex;
         flex-direction: column;
+        flex: 1;
+        font-size: smaller;
 
         > div:nth-child(1) { flex: 1; }
         > div:nth-child(2) { color: $bg-color-5; }

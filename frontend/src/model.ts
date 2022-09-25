@@ -1,9 +1,10 @@
 import { reactive } from "vue";
+
 import { Group } from "@/context/Group";
-import { Rule } from "@/context/Rule";
-import { initial } from "@/init";
 import { Picker } from "@/context/Picker";
 import { Pulse } from "@/context/Pulse";
+import { Rule } from "@/context/Rule";
+import { initial } from "@/init";
 
 export type Aspect = {
     w: number
@@ -12,13 +13,14 @@ export type Aspect = {
 
 export type Model = {
     aspect: Aspect,
+    attenuation: number
     distance: number
-    factor: number
-    running: boolean
+    excitation: number
     groups: Group[]
-    rules: Rule[],
-    pulse: Pulse,
     picker: Picker
+    pulse: Pulse,
+    rules: Rule[],
+    running: boolean
 }
 
 export const model = reactive(initial);

@@ -8,8 +8,9 @@
 
 <script lang="ts">
     import { defineComponent } from "vue";
-    import { model } from "@/model";
+
     import { PulseCtx } from "@/context/Pulse";
+    import { model } from "@/model";
 
     const canvasAndCtx = (): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -46,14 +47,14 @@
 @import "@/assets/css.scss";
 
 #stage {
-    border: 1px solid $bg-color-3;
     border-radius: $border-radius;
+    border: 1px solid $bg-color-3;
 
     #canvas {
-        width: 100%;
-        height: 100%;
         background-color: $bg-color-0;
         border-radius: 4px;
+        height: 100%;
+        width: 100%;
     }
 }
 </style>

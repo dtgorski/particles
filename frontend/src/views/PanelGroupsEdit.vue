@@ -60,7 +60,7 @@
             </div>
         </div>
     </fieldset>
-    <ColorPickerView v-show="picker.active" @colorPicked=picked />
+    <PopupPicker v-show="picker.active" @colorPicked=picked />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -68,13 +68,14 @@
 <script lang="ts">
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
-    import { model } from "@/model";
-    import { GroupCtx, Group, GroupId } from "@/context/Group";
-    import { RuleCtx } from "@/context/Rule";
-    import ColorPickerView from "@/views/ColorPickerView.vue";
-    import { on, un } from "@/util";
+
     import { ColorData } from "@/context/Color";
+    import { Group, GroupCtx, GroupId } from "@/context/Group";
     import { PickerCtx } from "@/context/Picker";
+    import { RuleCtx } from "@/context/Rule";
+    import { model } from "@/model";
+    import { on, un } from "@/util";
+    import PopupPicker from "@/views/PopupPicker.vue";
 
     // Deactivate rules depending on this group.
     const deactivateRules = (group: Group) => {
@@ -102,7 +103,7 @@
     };
 
     export default defineComponent({
-        components: { ColorPickerView, Icon },
+        components: { PopupPicker, Icon },
         methods: {
             append: () => {
                 model.groups.push(GroupCtx.createRandomGroup());
@@ -169,16 +170,16 @@
 
 fieldset {
     > div {
-        gap: 4px;
-        display: flex;
         align-items: center;
+        display: flex;
+        gap: 4px;
         justify-content: flex-end;
 
         > div {
-            font-size: smaller;
-            color: $color-pri;
-            text-align: center;
             @extend %text-shadow;
+            color: $color-pri;
+            font-size: smaller;
+            text-align: center;
         }
 
         > div:nth-child(1) { flex: 0; min-width: 24px; }
