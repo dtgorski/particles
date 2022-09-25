@@ -1,6 +1,6 @@
 <template>
-    <fieldset id="speed-edit">
-        <legend>Speed factor</legend>
+    <fieldset id="factor-edit">
+        <legend>Excitation factor</legend>
         <Slider
             v-model=factor
             :min=0
@@ -29,7 +29,7 @@
 <style lang="scss">
 @import "@/assets/css.scss";
 
-#speed-edit {
+#factor-edit {
     padding: 16px;
     * { cursor: default !important; }
 }

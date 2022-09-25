@@ -182,10 +182,7 @@ fieldset {
             svg { max-width: 24px; }
         }
         > div:nth-child(4) { flex: 0; min-width: 24px; height: 18px;
-            svg {
-                width: 18px;
-                height: 18px;
-            }
+            svg { width: 18px; height: 18px; }
         }
         > div:nth-child(5) { flex: 8; }
         > div:nth-child(6) { flex: 0; min-width: 24px;
@@ -206,6 +203,11 @@ fieldset {
             color: #999;
             background: $bg-color-4;
         }
+    }
+
+    input[type=number] {
+        text-align: right !important;
+        font-family: monospace;
     }
 }
 </style>

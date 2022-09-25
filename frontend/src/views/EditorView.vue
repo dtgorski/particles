@@ -2,7 +2,7 @@
     <div id="editor-view">
         <div>
             <DistanceEditView />
-            <SpeedEditView />
+            <FactorEditView />
         </div>
         <GroupsEditView />
         <RulesEditView />
@@ -24,12 +24,12 @@
     import GroupsEditView from "@/views/GroupsEditView.vue";
     import RulesEditView from "@/views/RulesEditView.vue";
     import DistanceEditView from "@/views/DistanceEditView.vue";
-    import SpeedEditView from "@/views/SpeedEditView.vue";
+    import FactorEditView from "@/views/FactorEditView.vue";
 
     export default defineComponent({
         components: {
             DistanceEditView,
-            SpeedEditView,
+            FactorEditView,
             GroupsEditView,
             RulesEditView,
         }

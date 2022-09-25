@@ -146,14 +146,6 @@
 
             }
         },
-        // mounted: () => {
-        //     on(document.body, "click", resetPicker);
-        //     on(window, "resize", resetPicker);
-        // },
-        // unmounted: () => {
-        //     un(document.body, "click", resetPicker);
-        //     un(window, "resize", resetPicker);
-        // },
         setup: () => { return model; },
     });
 
