@@ -16,7 +16,7 @@
 <script lang="ts">
     import { defineComponent } from "vue";
     import { model } from "@/model";
-    import Slider from '@vueform/slider';
+    import Slider from "@vueform/slider";
 
     export default defineComponent({
         components: { Slider },

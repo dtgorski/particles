@@ -8,7 +8,7 @@ export type Variables = {
     pulse: Pulse,
     gravity: number,
     distance: number,
-    speed: number
+    factor: number
 }
 
 export class Universe {
@@ -31,6 +31,10 @@ export class Universe {
         const particlesA = v.groupA.particles;
         const particlesB = v.groupB.particles;
 
+        const factor = (): number => {
+            return (v.factor / 100)**2;
+        };
+
         for (let i = 0; i < particlesA.length; i++) {
             const pA = particlesA[i];
             let fx = 0, fy = 0;
@@ -44,8 +48,8 @@ export class Universe {
 
                 if (r > 0 && r <= v.distance) {
                     const f = v.gravity / r;
-                    fx += f * dx * (v.speed / 200);
-                    fy += f * dy * (v.speed / 200);
+                    fx += f * dx * factor();
+                    fy += f * dy * factor();
                 }
             }
 

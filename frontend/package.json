@@ -7,7 +7,6 @@
         "build": "vue-cli-service build",
         "lint": "vue-cli-service lint"
     },
-    "sideEffects": false,
     "dependencies": {
         "@iconify/vue": "^3.2.1",
         "@types/uuid": "^8.3.4",
