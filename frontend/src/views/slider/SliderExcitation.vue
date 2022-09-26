@@ -1,10 +1,10 @@
 <template>
-    <fieldset id="distance">
-        <legend>Force distance</legend>
+    <fieldset>
+        <legend>Excitation</legend>
         <Slider
-            v-model=distance
+            v-model=excitation
             :min=1
-            :max="Math.ceil(Math.sqrt(aspect.w*aspect.w + aspect.h*aspect.h))"
+            :max=99
             :tooltips=false
             :options="{ animate: false }"
         />
@@ -19,10 +19,12 @@
 
     import { model } from "@/model";
 
-    export default defineComponent({
+    const SliderExcitation =  defineComponent({
         components: { Slider },
         setup: () => { return model; },
     });
+
+    export default SliderExcitation;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -30,7 +32,7 @@
 <style lang="scss">
 @import "@/assets/css.scss";
 
-#distance {
+fieldset {
     padding: 16px;
     * { cursor: default !important; }
 }

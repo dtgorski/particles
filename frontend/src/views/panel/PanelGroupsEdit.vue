@@ -60,72 +60,39 @@
             </div>
         </div>
     </fieldset>
-    <PopupPicker v-show="picker.active" @colorPicked=picked />
+    <PopupColorPicker v-show="picker.active" @colorPicked=picked />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
     import { Icon } from "@iconify/vue";
-    import { defineComponent } from "vue";
+    import { defineComponent, nextTick } from "vue";
 
     import { ColorData } from "@/context/Color";
-    import { Group, GroupCtx, GroupId } from "@/context/Group";
+    import { GroupCtx, GroupId } from "@/context/Group";
     import { PickerCtx } from "@/context/Picker";
     import { RuleCtx } from "@/context/Rule";
     import { model } from "@/model";
     import { on, un } from "@/util";
-    import PopupPicker from "@/views/PopupPicker.vue";
+    import PopupColorPicker from "@/views/popup/PopupColorPicker.vue";
 
-    // Deactivate rules depending on this group.
-    const deactivateRules = (group: Group) => {
-        for (let i = 0; i < model.rules.length; i++) {
-            if (RuleCtx.hasActor(model.rules[i], group.id)) {
-                model.rules[i].active = false;
-            }
-        }
-    };
-
-    // When group has been activated, check if we can reactivate rules.
-    const reactivateRules = (group: Group) => {
-        for (let i = 0; i < model.rules.length; i++) {
-            if (RuleCtx.hasActor(model.rules[i], group.id)) {
-                const [ actorA, actorB ] = RuleCtx.actors(model.rules[i]);
-
-                const groupA = GroupCtx.getGroupById(model.groups, actorA.groupId);
-                const groupB = GroupCtx.getGroupById(model.groups, actorB.groupId);
-
-                if (groupA?.active && groupB?.active) {
-                    model.rules[i].active = true;
-                }
-            }
-        }
-    };
-
-    export default defineComponent({
-        components: { PopupPicker, Icon },
+    const PanelGroupEdit = defineComponent({
+        components: { PopupColorPicker, Icon },
         methods: {
             append: () => {
                 model.groups.push(GroupCtx.createRandomGroup());
             },
             remove: (index: number) => {
-                const affected = model.groups[index];
-                model.groups.splice(index, 1);
-
-                let i = model.rules.length;
-                while (i--) {
-                    if (model.rules[i].actorA.groupId == affected.id ||
-                        model.rules[i].actorB.groupId == affected.id) {
-                        model.rules.splice(i, 1);
-                    }
-                }
+                const group = model.groups[index];
+                GroupCtx.removeGroup(model.groups, group);
+                RuleCtx.removeRulesWithGroup(model.rules, group);
             },
             toggle: (index: number) => {
-                const affected = model.groups[index];
-                model.groups[index].active = !affected.active;
-
-                deactivateRules(affected);
-                reactivateRules(affected);
+                const group = model.groups[index];
+                GroupCtx.toggleActive(group);
+                RuleCtx.deactivateRules(model.rules, group);
+                RuleCtx.reactivateRules(model.rules, model.groups, group);
             },
             pick: (groupId: GroupId, e: MouseEvent) => {
                 const picker = document.getElementById("picker");
@@ -138,13 +105,10 @@
                 enablePicker();
             },
             picked: (color: ColorData) => {
+                nextTick(() => disablePicker());
+
                 const group = GroupCtx.getGroupById(model.groups, model.picker.groupId);
-                disablePicker();
-
-                if (group) {
-                    GroupCtx.setGroupColor(group, color);
-                }
-
+                if (group) { GroupCtx.setGroupColor(group, color); }
             }
         },
         setup: () => { return model; },
@@ -161,6 +125,8 @@
         model.picker = PickerCtx.createNullPicker();
         return true;
     };
+
+    export default PanelGroupEdit;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -51,8 +51,8 @@
             <div>
                 <Icon icon="mdi:checkbox-blank-circle"
                       :style="{
-                            color: getGroup(rule.actorA.groupId).colorValue,
-                            width: getGroup(rule.actorA.groupId).particleSize * 2
+                            color: getGroupById(rule.actorA.groupId).colorValue,
+                            width: getGroupById(rule.actorA.groupId).particleSize * 2
                       }"
                 />
             </div>
@@ -70,8 +70,8 @@
             <div>
                 <Icon icon="mdi:checkbox-blank-circle"
                       :style="{
-                            color: getGroup(rule.actorB.groupId).colorValue,
-                            width: getGroup(rule.actorB.groupId).particleSize * 2
+                            color: getGroupById(rule.actorB.groupId).colorValue,
+                            width: getGroupById(rule.actorB.groupId).particleSize * 2
                       }"
                 />
             </div>
@@ -109,7 +109,7 @@
     import { RuleCtx } from "@/context/Rule";
     import { model } from "@/model";
 
-    export default defineComponent({
+    const PanelRulesEdit = defineComponent({
         components: { Icon },
         methods: {
             append: () => {
@@ -126,36 +126,27 @@
                 model.rules.forEach(rule => rule.gravity *= -1);
             },
             toggle: (index: number) => {
-                if (!model.rules[index].active) {
-                    const [ a, b ] = RuleCtx.actors(model.rules[index]);
-                    const groupA = GroupCtx.getGroupById(model.groups, a.groupId);
-                    const groupB = GroupCtx.getGroupById(model.groups, b.groupId);
-
-                    if (groupA?.active && groupB?.active) {
-                        model.rules[index].active = true;
-                    }
-                    return;
-                }
-                model.rules[index].active = false;
+                RuleCtx.toggleActive(model.rules[index], model.groups);
             },
             select: (index: number, ev: Event, groupName: string) => {
-                const elm = (ev.target as HTMLSelectElement);
-                elm.blur();
-
                 const rule = model.rules[index];
+                const elm = (ev.target as HTMLSelectElement);
                 groupName == "A"
                     ? rule.actorA.groupId = elm.value
                     : rule.actorB.groupId = elm.value;
+                elm.blur();
             },
             hasActiveGroups: (groups: Group[]): boolean => {
                 return GroupCtx.hasActiveGroups(groups);
             },
-            getGroup: (groupId: GroupId): Group | undefined => {
+            getGroupById: (groupId: GroupId): Group | undefined => {
                 return GroupCtx.getGroupById(model.groups, groupId);
             }
         },
         setup: () => { return model; },
     });
+
+    export default PanelRulesEdit;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

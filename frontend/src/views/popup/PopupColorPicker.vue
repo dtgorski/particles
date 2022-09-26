@@ -17,9 +17,9 @@
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
 
-    import { ColorData,colors } from "@/context/Color";
+    import { ColorData, colors } from "@/context/Color";
 
-    export default defineComponent({
+    const PopupColorPicker = defineComponent({
         components: { Icon },
         emits: [ "colorPicked" ],
         setup: (props, { emit }) => {
@@ -27,6 +27,7 @@
             return { colors, colorPicked };
         },
     });
+    export default PopupColorPicker;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

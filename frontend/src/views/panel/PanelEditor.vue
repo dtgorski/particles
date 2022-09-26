@@ -23,13 +23,13 @@
 <script lang="ts">
     import { defineComponent } from "vue";
 
-    import PanelGroupsEdit from "@/views/PanelGroupsEdit.vue";
-    import PanelRulesEdit from "@/views/PanelRulesEdit.vue";
-    import SliderAttenuation from "@/views/SliderAttenuation.vue";
-    import SliderDistance from "@/views/SliderDistance.vue";
-    import SliderExcitation from "@/views/SliderExcitation.vue";
+    import PanelGroupsEdit from "@/views/panel/PanelGroupsEdit.vue";
+    import PanelRulesEdit from "@/views/panel/PanelRulesEdit.vue";
+    import SliderAttenuation from "@/views/slider/SliderAttenuation.vue";
+    import SliderDistance from "@/views/slider/SliderDistance.vue";
+    import SliderExcitation from "@/views/slider/SliderExcitation.vue";
 
-    export default defineComponent({
+    const PanelEditor = defineComponent({
         components: {
             SliderDistance,
             SliderExcitation,
@@ -38,6 +38,8 @@
             PanelRulesEdit,
         }
     });
+
+    export default PanelEditor;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -85,4 +87,7 @@
         > div:nth-child(2) { color: $bg-color-5; }
     }
 }
+</style>
+
+<style lang="scss">
 </style>

@@ -1,6 +1,6 @@
 import { Pulse } from "@/context/Pulse";
 import { DrawGroup, Particle } from "@/engine/Driver";
-import { randIntExc } from "@/util";
+import { randIntExc, random } from "@/util";
 
 export type Variables = {
     groupA: DrawGroup,
@@ -14,15 +14,33 @@ export type Variables = {
 
 export class Universe {
 
+    private centerX: number;
+    private centerY: number;
+
     constructor(
         readonly w: number,
         readonly h: number
-    ) { }
+    ) {
+        this.centerX = this.w / 2;
+        this.centerY = this.h / 2;
+    }
+
+    // createParticle(): Particle {
+    //     return {
+    //         x: randIntExc(0, this.w),
+    //         y: randIntExc(0, this.h),
+    //         vx: 0,
+    //         vy: 0,
+    //     };
+    // }
 
     createParticle(): Particle {
+        const r = (this.centerX - 50) * Math.sqrt(random());
+        const t = random() * 2 * Math.PI;
+
         return {
-            x: randIntExc(0, this.w),
-            y: randIntExc(0, this.h),
+            x: this.centerX + r * Math.cos(t),
+            y: this.centerY + r * Math.sin(t),
             vx: 0,
             vy: 0,
         };

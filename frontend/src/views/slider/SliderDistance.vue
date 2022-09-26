@@ -1,10 +1,10 @@
 <template>
-    <fieldset id="attenuation">
-        <legend>Attenuation</legend>
+    <fieldset>
+        <legend>Force distance</legend>
         <Slider
-            v-model=attenuation
+            v-model=distance
             :min=1
-            :max=99
+            :max="Math.ceil(Math.sqrt(aspect.w*aspect.w + aspect.h*aspect.h))"
             :tooltips=false
             :options="{ animate: false }"
         />
@@ -18,10 +18,13 @@
     import { defineComponent } from "vue";
 
     import { model } from "@/model";
-    export default defineComponent({
+
+    const SliderDistance = defineComponent({
         components: { Slider },
         setup: () => { return model; },
     });
+
+    export default SliderDistance;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -29,7 +32,7 @@
 <style lang="scss">
 @import "@/assets/css.scss";
 
-#attenuation {
+fieldset {
     padding: 16px;
     * { cursor: default !important; }
 }

@@ -16,17 +16,19 @@
 <script lang="ts">
     import { defineComponent } from "vue";
 
-    import PanelCanvas from "@/views/PanelCanvas.vue";
-    import PanelEditor from "@/views/PanelEditor.vue";
-    import PanelHeader from "@/views/PanelHeader.vue";
+    import PanelCanvas from "@/views/panel/PanelCanvas.vue";
+    import PanelEditor from "@/views/panel/PanelEditor.vue";
+    import PanelHeader from "@/views/panel/PanelHeader.vue";
 
-    export default defineComponent({
+    const App = defineComponent({
         components: {
             PanelCanvas,
             PanelHeader,
             PanelEditor
         },
     });
+
+    export default App;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

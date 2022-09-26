@@ -1,5 +1,8 @@
 import { ColorCtx, ColorData } from "@/context/Color";
-import { randId,randIntExc, randIntInc } from "@/util";
+import { RuleCtx } from "@/context/Rule";
+import { groups } from "@/init";
+import { model } from "@/model";
+import { randId, randIntExc, randIntInc } from "@/util";
 
 export type Group = {
     active: boolean,
@@ -25,6 +28,10 @@ export const GroupCtx = {
         return false;
     },
 
+    toggleActive: (group: Group) => {
+        group.active = !group.active;
+    },
+
     getGroupById: (groups: Group[], groupId: GroupId): Group | undefined => {
         for (let i = 0; i < groups.length; i++) {
             if (groups[i].id == groupId) { return groups[i]; }
@@ -33,7 +40,7 @@ export const GroupCtx = {
     },
 
     // Returns undefined when no group is active.
-    pickRandomActiveGroup: (groups: Group[]): Group | undefined => {
+    getRandomActiveGroup: (groups: Group[]): Group | undefined => {
         const active: number[] = [];
         for (let i = 0; i < groups.length; i++) {
             groups[i].active ? active.push(i) : null;
@@ -45,7 +52,7 @@ export const GroupCtx = {
 
     setGroupColor: (group: Group, color: ColorData) => {
         group.colorName = color.name;
-        group.colorValue= color.value;
+        group.colorValue = color.value;
         group.label = ColorCtx.createLabel(color.name, color.shade);
     },
 
@@ -65,5 +72,14 @@ export const GroupCtx = {
             particleMass: 1,
             particleSize: randIntInc(2, 4),
         };
-    }
+    },
+
+    removeGroup: (groups: Group[], group: Group): void => {
+        for (let i = 0; i < groups.length; i++) {
+            if (groups[i] === group) {
+                model.groups.splice(i, 1);
+                return;
+            }
+        }
+    },
 };

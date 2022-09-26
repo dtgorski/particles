@@ -1,5 +1,5 @@
 <template>
-    <div id="header">
+    <div>
         <div id="buttons">
             <button class="action-button" title="Pause" @click=stopEngine v-show="running === true">
                 <Icon icon="mdi:pause" />
@@ -49,7 +49,7 @@
     };
     const restartEngine = () => {
         stopEngine();
-        engine = createEngine(document.getElementById("canvas"));
+        engine = createEngine(document.getElementById("particle-canvas"));
         startEngine();
     };
     const engineRunning = () => {
@@ -68,12 +68,14 @@
     const exportModel = () => { /**/ };
     const importModel = () => { /**/ };
 
-    export default defineComponent({
+    const PanelHeader = defineComponent({
         components: { Icon },
         methods: { startEngine, stopEngine, engineRunning, restartEngine, exportModel, importModel },
         mounted() { restartEngine(); },
         setup: () => { return model; },
     });
+
+    export default PanelHeader;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -81,7 +83,7 @@
 <style scoped lang="scss">
 @import "@/assets/css.scss";
 
-#header {
+div:first-child {
     display: flex;
 
     #buttons {

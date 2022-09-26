@@ -1,6 +1,6 @@
 <template>
-    <div id="stage">
-        <canvas id="canvas" :width=aspect.w :height=aspect.h @click=click></canvas>
+    <div>
+        <canvas id="particle-canvas" :width=aspect.w :height=aspect.h @click=click></canvas>
     </div>
 </template>
 
@@ -13,7 +13,7 @@
     import { model } from "@/model";
 
     const canvasAndCtx = (): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } => {
-        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+        const canvas = document.getElementById("particle-canvas") as HTMLCanvasElement;
         if (!canvas) { throw new Error("canvas not available"); }
 
         const ctx = canvas.getContext("2d");
@@ -22,7 +22,7 @@
         return { canvas, ctx };
     };
 
-    export default defineComponent({
+    const PanelCanvas = defineComponent({
         methods: {
             click: (e: PointerEvent) => {
                 if (!model.running) { return; }
@@ -39,6 +39,8 @@
         },
         setup: () => { return model; },
     });
+
+    export default PanelCanvas;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -46,11 +48,11 @@
 <style scoped lang="scss">
 @import "@/assets/css.scss";
 
-#stage {
+div {
     border-radius: $border-radius;
     border: 1px solid $bg-color-3;
 
-    #canvas {
+    #particle-canvas {
         background-color: $bg-color-0;
         border-radius: 4px;
         height: 100%;

@@ -1,8 +1,8 @@
 <template>
-    <fieldset id="excitation">
-        <legend>Excitation</legend>
+    <fieldset>
+        <legend>Attenuation</legend>
         <Slider
-            v-model=excitation
+            v-model=attenuation
             :min=1
             :max=99
             :tooltips=false
@@ -18,10 +18,13 @@
     import { defineComponent } from "vue";
 
     import { model } from "@/model";
-    export default defineComponent({
+
+    const SliderAttenuation = defineComponent({
         components: { Slider },
         setup: () => { return model; },
     });
+
+    export default SliderAttenuation;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -29,7 +32,7 @@
 <style lang="scss">
 @import "@/assets/css.scss";
 
-#excitation {
+fieldset {
     padding: 16px;
     * { cursor: default !important; }
 }
