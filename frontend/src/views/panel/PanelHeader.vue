@@ -1,26 +1,12 @@
 <template>
     <div>
         <div id="buttons">
-            <button class="action-button" title="Pause" @click=stopEngine v-show="running === true">
-                <Icon icon="mdi:pause" />
-            </button>
-            <button class="action-button" title="Play" @click=startEngine v-show="running === false">
-                <Icon icon="mdi:play" />
-            </button>
-            <button class="action-button" title="Restart" @click=restartEngine>
-                <Icon icon="mdi:reload" />
-            </button>
-            <!--
-            <button class="action-button" title="Export" @click=exportModel>
-                <Icon icon="mdi:export" />
-            </button>
-            <button class="action-button" title="Import" @click=importModel>
-                <Icon icon="mdi:import" />
-            </button>
-            -->
+            <ButtonIconAction icon="mdi:pause" title="Pause" @click=stopEngine v-show="model.running" />
+            <ButtonIconAction icon="mdi:play" title="Play" @click=startEngine v-show="!model.running" />
+            <ButtonIconAction icon="mdi:reload" Restart="Restart" @click=restartEngine />
         </div>
         <div id="logo">
-            <div><img src="@/assets/logo.png" alt="particles" width="132" height="48" /></div>
+            <div><img src="@/assets/logo.png" alt="particles" width="132" height="50" /></div>
             <div>particles</div>
         </div>
     </div>
@@ -28,15 +14,17 @@
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-    import { Icon } from "@iconify/vue";
-    import { defineComponent } from "vue";
-
+<script setup lang="ts">
+    import { inject, onMounted } from "vue";
+    import { FastCache, Key } from "@/cache";
     import { Driver } from "@/engine/Driver";
     import { Engine } from "@/engine/Engine";
-    import { Universe } from "@/engine/Universe";
+    import { System } from "@/engine/System";
     import { model } from "@/model";
 
+    const cache = inject("cache") as FastCache;
+
+    // TODO: move elsewhere
     let engine: Engine;
 
     const startEngine = () => {
@@ -49,39 +37,46 @@
     };
     const restartEngine = () => {
         stopEngine();
-        engine = createEngine(document.getElementById("particle-canvas"));
+        engine = createEngine(document.getElementById("panel-canvas"));
         startEngine();
     };
-    const engineRunning = () => {
-        return engine?.running();
+    const engineRunning = (): boolean => {
+        return engine ? engine.running() : false;
     };
 
     const createEngine = (elm: HTMLElement | null): Engine => {
         if (!elm) { console.error("createEngine: element not found, bailing out"); }
 
         const canvas = elm as HTMLCanvasElement;
-        const driver = new Driver(model, new Universe(canvas.width, canvas.height));
+        const driver = new Driver(model, new System(canvas.width, canvas.height));
 
-        return new Engine(canvas, driver);
+        return new Engine(canvas, driver, (e: Engine) => { cache[Key.FPS] = e.fps(); });
     };
 
     const exportModel = () => { /**/ };
     const importModel = () => { /**/ };
 
-    const PanelHeader = defineComponent({
-        components: { Icon },
-        methods: { startEngine, stopEngine, engineRunning, restartEngine, exportModel, importModel },
-        mounted() { restartEngine(); },
-        setup: () => { return model; },
-    });
+    onMounted(restartEngine);
+</script>
 
-    export default PanelHeader;
+<script lang="ts">
+    import { Icon } from "@iconify/vue";
+    import { defineComponent } from "vue";
+    import ButtonIconAction from "@/component/ButtonIconAction.vue";
+
+    export default defineComponent({
+        name: "PanelHeader",
+        components: {
+            ButtonIconAction,
+            Icon,
+        },
+    });
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped lang="scss">
-@import "@/assets/css.scss";
+@import "@/assets/vars.scss";
 
 div:first-child {
     display: flex;

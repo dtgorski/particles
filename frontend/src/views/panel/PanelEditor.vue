@@ -1,15 +1,21 @@
 <template>
-    <div id="editor">
-        <div>
-            <SliderDistance />
-            <SliderExcitation />
-            <SliderAttenuation />
+    <div id="panel-editor">
+        <div class="one-slider-row">
+            <SliderForceDistance />
+        </div>
+        <div class="two-slider-row">
+            <SliderForceExcitation />
+            <SliderForceAttenuation />
         </div>
         <PanelGroupsEdit />
         <PanelRulesEdit />
-        <div>
+        <div id="spacer" />
+        <PanelSettingsEdit />
+        <div id="footer">
             <div></div>
             <div>
+                <div><span id="fps">0</span> fps</div>
+                <div>·</div>
                 <a href="https://github.com/dtgorski/particles" target="_blank">
                     Daniel T. Gorski · dtg [at] lengo [dot] org
                 </a>
@@ -20,74 +26,81 @@
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-    import { defineComponent } from "vue";
+<script setup lang="ts">
+    import { inject, onBeforeUnmount, onMounted  } from "vue";
+    import { FastCache, Key } from "@/cache";
+    import { $ } from "@/util";
 
-    import PanelGroupsEdit from "@/views/panel/PanelGroupsEdit.vue";
-    import PanelRulesEdit from "@/views/panel/PanelRulesEdit.vue";
-    import SliderAttenuation from "@/views/slider/SliderAttenuation.vue";
-    import SliderDistance from "@/views/slider/SliderDistance.vue";
-    import SliderExcitation from "@/views/slider/SliderExcitation.vue";
+    const cache = inject("cache") as FastCache;
+    let handle: number;
 
-    const PanelEditor = defineComponent({
-        components: {
-            SliderDistance,
-            SliderExcitation,
-            SliderAttenuation,
-            PanelGroupsEdit,
-            PanelRulesEdit,
-        }
+    onMounted(() => {
+        handle = setInterval(() => { $("#fps").innerText = cache[Key.FPS] + ""; }, 1000);
     });
 
-    export default PanelEditor;
+    onBeforeUnmount(() => {
+        clearTimeout(handle);
+    });
+</script>
+
+<script lang="ts">
+    import { defineComponent } from "vue";
+    import PanelGroupsEdit from "@/views/panel/PanelGroupsEdit.vue";
+    import PanelRulesEdit from "@/views/panel/PanelRulesEdit.vue";
+    import PanelSettingsEdit from "@/views/panel/PanelSettingsEdit.vue";
+    import SliderForceAttenuation from "@/views/slider/SliderForceAttenuation.vue";
+    import SliderForceDistance from "@/views/slider/SliderForceDistance.vue";
+    import SliderForceExcitation from "@/views/slider/SliderForceExcitation.vue";
+
+    export default defineComponent({
+        name: "PanelEditor",
+        components: {
+            SliderForceDistance,
+            SliderForceExcitation,
+            SliderForceAttenuation,
+            PanelSettingsEdit,
+            PanelGroupsEdit,
+            PanelRulesEdit,
+        },
+    });
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style lang="scss">
-@import "@/assets/css.scss";
+<style scoped lang="scss">
+@import "@/assets/vars.scss";
 
-#editor {
+#panel-editor {
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
 
-    input, select {
-        @extend %text-shadow;
-        background-color: $bg-color-4;
-        border-radius: 2px;
-        border-width: 1px;
-        color: #fff;
-        margin-bottom: 4px;
-        padding: 5px 4px 2px 5px;
-        width: 100%;
-    }
-    input { @extend %inset; }
-    input[type=number] { text-align: center; }
-
-    select {
-        @extend %outset;
-        padding: 2px;
-    }
-
-    > div:first-child {
+    > .one-slider-row {
         display: flex;
         * { flex: 1 }
     }
-    > div:last-child {
+    > .two-slider-row {
+        display: flex;
+        * { flex: 1 }
+    }
+
+    #spacer { flex: 1; }
+
+    #footer {
         align-items: center;
         display: flex;
         flex-direction: column;
-        flex: 1;
-        font-size: smaller;
+        font-size: $font-small;
 
         > div:nth-child(1) { flex: 1; }
-        > div:nth-child(2) { color: $bg-color-5; }
+        > div:last-child {
+            display: flex;
+            gap: 8px;
+            opacity: 0.4;
+            color: $color-pri;
+        }
     }
 }
-</style>
-
-<style lang="scss">
 </style>

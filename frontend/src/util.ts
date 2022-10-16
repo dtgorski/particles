@@ -4,6 +4,10 @@ export const random = (): number => {
     return Math.random();
 };
 
+export const randomAttraction = (): number => {
+    return Math.floor((random() - 0.5) * 100) / 100;
+};
+
 // The maximum is exclusive and the minimum is inclusive.
 export const randIntExc = (min: number, max: number): number => {
     min = Math.ceil(min);

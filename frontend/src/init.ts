@@ -1,37 +1,48 @@
 import { Group, GroupCtx } from "@/context/Group";
-import { PickerCtx } from "@/context/Picker";
-import { PulseCtx } from "@/context/Pulse";
+import { ColorPicker } from "@/context/ColorPicker";
+import { Pulse } from "@/context/Pulse";
 import { Rule, RuleCtx } from "@/context/Rule";
-import { Model } from "@/model";
+import { GroupPicker } from "@/context/GroupPicker";
+import { Aspect, Jitter, Model, UI } from "@/model";
+import { randomAttraction } from "@/util";
 
 export const groups: Group[] = [];
 export const rules: Rule[] = [];
 
+// Groups.
 groups.push(GroupCtx.createRandomGroup());
 groups.push(GroupCtx.createRandomGroup(groups.map(group => group.colorName)));
 groups.push(GroupCtx.createRandomGroup(groups.map(group => group.colorName)));
 
-groups.forEach(group => {
-    rules.push(RuleCtx.createRule(group, group, RuleCtx.randomGravity()));
+groups.forEach((_, i) => {
+    groups[i].particleSize = i + 3;
 });
 
-rules.push(RuleCtx.createRule(groups[0], groups[1], RuleCtx.randomGravity()));
-rules.push(RuleCtx.createRule(groups[1], groups[2], RuleCtx.randomGravity()));
-rules.push(RuleCtx.createRule(groups[2], groups[0], RuleCtx.randomGravity()));
+// Rules
+groups.forEach(group => {
+    rules.push(RuleCtx.createRule(group, group, randomAttraction()));
+});
 
-// Different sizes and opposite attractions for the first group.
-groups.forEach((_, i) => { groups[i].particleSize = (i + 1) * 2; });
-rules.forEach((_, i) => { rules[i].gravity = i % 2 ? Math.abs(rules[i].gravity) : -Math.abs(rules[i].gravity);});
+rules.push(RuleCtx.createRule(groups[0], groups[1], randomAttraction()));
+rules.push(RuleCtx.createRule(groups[1], groups[2], randomAttraction()));
+rules.push(RuleCtx.createRule(groups[2], groups[0], randomAttraction()));
 
-// First start setup.
+rules.forEach((_, i) => {
+    rules[i].attraction = i % 2 ? Math.abs(rules[i].attraction) : -Math.abs(rules[i].attraction);
+});
+
+// First start.
 export const initial: Required<Model> = {
-    aspect: /*     */ { w: 1024, h: 1024 },
-    attenuation: /**/ 50, // => 0.5
+    running: /*    */ false,
     distance: /*   */ 256,
-    excitation: /* */ 20, // => 0.2
-    groups: /*     */ groups,
-    picker: /*     */ PickerCtx.createNullPicker(),
-    pulse: /*      */ PulseCtx.createNullPulse(),
-    rules: /*      */ rules,
-    running: /*    */ true,
+    aspect: /*     */ <Aspect>{ w: 1024, h: 1024 },
+    groups: /*     */ <Group[]>groups,
+    rules: /*      */ <Rule[]>rules,
+    jitter: /*     */ <Jitter>{ excitation: 0.2 * 100, attenuation: 0.5 * 100 },
+    pulse: /*      */ new Pulse(-1,-1,0),
+    colorPicker: /**/ new ColorPicker(""),
+    groupPicker: /**/ new GroupPicker(""),
+    ui: /*         */ <UI>{
+        ruleLabelsVisible: false
+    }
 };

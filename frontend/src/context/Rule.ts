@@ -1,13 +1,16 @@
-import { Group, GroupCtx } from "@/context/Group";
-import { randId, random } from "@/util";
+import { Group, GroupCtx, GroupId } from "@/context/Group";
+import { groups } from "@/init";
+import { randId, random, randomAttraction } from "@/util";
 
 export type Rule = {
-    id: string,
+    id: RuleId,
     active: boolean,
     actorA: Actor,
     actorB: Actor,
-    gravity: number,
+    attraction: number,
 }
+
+export type RuleId = string;
 
 export type Actor = {
     groupId: string
@@ -23,7 +26,6 @@ export const RuleCtx = {
         return rule.actorA.groupId === groupId || rule.actorB.groupId === groupId;
     },
 
-
     toggleActive: (rule: Rule, groups: Group[]) => {
         if (rule.active) {
             rule.active = false;
@@ -35,15 +37,22 @@ export const RuleCtx = {
         const groupB = GroupCtx.getGroupById(groups, actorB.groupId);
 
         if (groupA?.active && groupB?.active) {
-              rule.active = true;
+            rule.active = true;
         }
     },
 
-    createRule: (groupA: Group, groupB: Group, gravity: number): Rule => {
+    getRuleById: (rules: Rule[], ruleId: RuleId): Rule | undefined => {
+        for (let i = 0; i < rules.length; i++) {
+            if (rules[i].id == ruleId) { return rules[i]; }
+        }
+        return undefined;
+    },
+
+    createRule: (groupA: Group, groupB: Group, attraction: number): Rule => {
         return {
             id: randId(),
             active: true,
-            gravity: gravity,
+            attraction: attraction,
             actorA: { groupId: groupA.id },
             actorB: { groupId: groupB.id }
         };
@@ -56,7 +65,7 @@ export const RuleCtx = {
         return groupA && groupB ? <Rule>{
             id: randId(),
             active: true,
-            gravity: RuleCtx.randomGravity(),
+            attraction: randomAttraction(),
             actorA: { groupId: groupA.id },
             actorB: { groupId: groupB.id }
         } : undefined;
@@ -95,9 +104,5 @@ export const RuleCtx = {
                 }
             }
         }
-    },
-
-    randomGravity: (): number => {
-        return Math.floor((random() - 0.5) * 100) / 100;
     }
 };

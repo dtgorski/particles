@@ -1,21 +1,14 @@
+import { Pulse } from "@/context/Pulse";
 import { toRaw } from "vue";
 
 import { GroupCtx } from "@/context/Group";
-import { Universe, Variables } from "@/engine/Universe";
+import { Particle, System, Variables } from "@/engine/System";
 import { Model } from "@/model";
-
-export type Particle = {
-    x: number
-    y: number
-    vx: number
-    vy: number
-}
 
 export type DrawGroupMap = Record<string, DrawGroup>
 
 export type DrawGroup = {
     active: boolean
-    mass: number
     size: number
     color: string
     particles: Particle[]
@@ -27,16 +20,16 @@ export class Driver {
 
     constructor(
         readonly model: Model,
-        readonly universe: Universe,
+        readonly universe: System,
     ) {}
 
     drawGroupMap(): DrawGroupMap {
         return this.map;
     }
 
-    commit(updateCanvas: () => void): void {
+    commit(callback: () => void): void {
         this.update();
-        requestAnimationFrame(updateCanvas);
+        requestAnimationFrame(callback);
     }
 
     update(): void {
@@ -60,7 +53,6 @@ export class Driver {
             const drawGroup = this.map[groupId];
 
             drawGroup.active = group.active;
-            drawGroup.mass = group.particleMass;
             drawGroup.size = group.particleSize;
             drawGroup.color = group.colorValue;
 
@@ -68,7 +60,9 @@ export class Driver {
             const diff = group.particleCount - drawGroup.particleCount;
             if (diff > 0) {
                 for (let i = 0; i < diff; i++) {
-                    drawGroup.particles.push(this.universe.createParticle());
+                    drawGroup.particles.push(
+                        this.universe.createParticle()
+                    );
                 }
                 drawGroup.particleCount = group.particleCount;
             }
@@ -88,11 +82,12 @@ export class Driver {
 
             const particles = [];
             for (let j = 0; j < group.particleCount; j++) {
-                particles.push(this.universe.createParticle());
+                particles.push(
+                    this.universe.createParticle()
+                );
             }
             this.map[group.id] = <DrawGroup>{
                 active: group.active,
-                mass: group.particleMass,
                 size: group.particleSize,
                 color: group.colorValue,
                 particles: particles,
@@ -101,7 +96,7 @@ export class Driver {
         }
 
         this.applyRules();
-        this.model.pulse.x = -1;
+        this.model.pulse = new Pulse(-1, -1, 0);
     }
 
     private applyRules(): void {
@@ -112,13 +107,12 @@ export class Driver {
             if (!rule.active) { continue; }
 
             this.universe.calculate(<Variables>{
+                distance: this.model.distance,
+                attraction: rule.attraction,
                 groupA: this.map[rule.actorA.groupId],
                 groupB: this.map[rule.actorB.groupId],
-                gravity: rule.gravity,
+                jitter: this.model.jitter,
                 pulse: this.model.pulse,
-                distance: this.model.distance,
-                excitation: this.model.excitation,
-                attenuation: this.model.attenuation,
             });
         }
     }

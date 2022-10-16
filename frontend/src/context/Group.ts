@@ -1,17 +1,13 @@
 import { ColorCtx, ColorData } from "@/context/Color";
-import { RuleCtx } from "@/context/Rule";
-import { groups } from "@/init";
-import { model } from "@/model";
 import { randId, randIntExc, randIntInc } from "@/util";
 
 export type Group = {
+    id: GroupId,
     active: boolean,
     colorName: string,
     colorValue: string,
-    id: GroupId,
     label: string,
     particleCount: number,
-    particleMass: number,
     particleSize: number,
 }
 
@@ -59,7 +55,7 @@ export const GroupCtx = {
     // Random group is active by default.
     createRandomGroup: (burnedColorNames?: string[]): Group => {
         let color;
-        do color = ColorCtx.createRandom(); while (burnedColorNames?.includes(color.name));
+        do color = ColorCtx.createRandomColor(); while (burnedColorNames?.includes(color.name));
         const label = ColorCtx.createLabel(color.name, color.shade);
 
         return <Group>{
@@ -69,7 +65,6 @@ export const GroupCtx = {
             id: randId(),
             label: label,
             particleCount: randIntInc(30, 60) * 10,
-            particleMass: 1,
             particleSize: randIntInc(2, 4),
         };
     },
@@ -77,9 +72,9 @@ export const GroupCtx = {
     removeGroup: (groups: Group[], group: Group): void => {
         for (let i = 0; i < groups.length; i++) {
             if (groups[i] === group) {
-                model.groups.splice(i, 1);
+                groups.splice(i, 1);
                 return;
             }
         }
-    },
+    }
 };

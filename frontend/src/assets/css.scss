@@ -1,44 +1,4 @@
-$color-pri: #ddd;
-$color-sec: #4db6ac;
-$color-tri: #80cbc4;
-$color-err: #d00;
-$color-hover: #548686;
-$color-active: #80cbc4;
-
-$bg-color-0: #000;
-$bg-color-1: #111;
-$bg-color-2: #222;
-$bg-color-3: #333;
-$bg-color-4: #444;
-$bg-color-5: #555;
-
-$border-width: 1px;
-$border-radius: 4px;
-$border-color-pri: #111;
-$border-color-sec: #444;
-
-%text-shadow { text-shadow: 1px 1px $bg-color-0; }
-%box-shadow { box-shadow: $bg-color-2 4px 4px 16px; }
-
-%inset {
-    border-style: solid;
-    border-width: $border-width;
-    border-radius: $border-radius;
-    border-top-color: $border-color-pri;
-    border-right-color: $border-color-sec;
-    border-bottom-color: $border-color-sec;
-    border-left-color: $border-color-pri;
-}
-
-%outset {
-    border-style: solid;
-    border-width: $border-width;
-    border-radius: $border-radius;
-    border-top-color: $border-color-sec;
-    border-right-color: $border-color-pri;
-    border-bottom-color: $border-color-pri;
-    border-left-color: $border-color-sec;
-}
+@import "vars.scss";
 
 ::-webkit-scrollbar { width: 8px; height: 10px; }
 ::-webkit-scrollbar-button { width: 0; height: 0; }
@@ -48,15 +8,10 @@ $border-color-sec: #444;
 ::-webkit-scrollbar-track { background: transparent; border: 0; }
 ::-webkit-scrollbar-corner { background: transparent; }
 
-:root {
-    // https://github.com/vueform/slider#styling-with-css-vars
-    --slider-bg: #222;
-    --slider-connect-bg: #548686;
-}
-
 body {
     margin: 0;
     font-family: sans-serif;
+    font-size: $font-medium;
 
     color: $color-pri;
     background-image: radial-gradient(#888 30%, #000 100%);
@@ -70,46 +25,43 @@ fieldset {
     background-color: $bg-color-3;
     border-radius: 4px 4px 5px 5px;
     margin-bottom: 12px;
+    padding: 4px 8px 12px 8px;
 
     legend {
         @extend %text-shadow;
         background-color: $bg-color-2;
         border-radius: 4px;
         color: $color-sec;
-        font-size: smaller;
+        font-size: $font-small;
         padding: 2px 8px;
+        white-space: nowrap;
     }
 }
 
 a {
     text-decoration: none;
-
     &:hover { color: $color-hover !important; }
     &:active { color: $color-active !important;; }
     &:visited, &:link { color: inherit }
 }
 
-.icon-button, .action-button {
-    background-color: transparent;
-    border-radius: 2px;
-    border: 0;
-    color: $color-pri;
-    filter: drop-shadow(1px 1px 0 $bg-color-0);
-    margin: 0;
-    padding: 0;
+input {
+    @extend %inset;
+    @extend %text-shadow;
+    background-color: $bg-color-4;
+    border-radius: 4px;
+    color: $color-tri;
+    cursor: text;
+    font-size: $font-medium;
+    padding: 4px 4px 2px 5px;
+    width: 100%;
 
-    &:hover { background-color: $color-hover; }
-    &:active { background-color: $color-active; }
+    &:hover { border-color: $color-hover; }
 }
 
-.icon-button {
-    max-height: 24px;
-    > svg { height: 24px; width: 24px; }
-}
-
-.action-button {
-    max-height: 48px;
-    > svg { height: 32px; width: 32px;}
+button {
+    transform: translateY(1px);
+    cursor: pointer;
 }
 
 .disabled {

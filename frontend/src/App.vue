@@ -15,37 +15,35 @@
 
 <script lang="ts">
     import { defineComponent } from "vue";
-
     import PanelCanvas from "@/views/panel/PanelCanvas.vue";
     import PanelEditor from "@/views/panel/PanelEditor.vue";
     import PanelHeader from "@/views/panel/PanelHeader.vue";
 
-    const App = defineComponent({
+    export default defineComponent({
+        name: "App",
         components: {
             PanelCanvas,
             PanelHeader,
             PanelEditor
         },
     });
-
-    export default App;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style lang="scss">
-@import "@/assets/css.scss";
+@import "@/assets/vars.scss";
 
 #app {
     background: repeating-linear-gradient(0deg, $bg-color-0 0, $bg-color-0 1px, transparent 2px, transparent 2px);
     display: flex;
     flex-flow: nowrap;
     gap: 8px;
-    height: 100vh;
     justify-content: center;
     overflow-y: hidden;
     padding: 8px;
     width: 100vw;
+    height: 100vh;
 }
 
 #sidebar {
@@ -54,11 +52,10 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    max-height: 100vh;
-    max-width: 460px;
     overflow-y: hidden;
     padding-top: 4px;
     width: 460px;
+    max-height: 100vh;
 
     > div:first-child {
         padding: 4px 8px 8px 8px;

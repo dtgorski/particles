@@ -1,11 +1,11 @@
 <template>
-    <fieldset id="picker">
+    <fieldset>
         <div v-for="(color, name) in colors" :key=name>
-            <div v-for="(_, shade) in color" :key=shade class="icon-button">
-                <Icon
-                    icon="mdi:circle"
-                    :style="{ color: color[shade] }"
-                    @click="colorPicked({name: name, value: color[shade], shade: shade})" />
+            <div v-for="(_, shade) in color" :key=shade>
+                <Icon icon="mdi:circle"
+                      :style="{ color: color[shade] }"
+                      @click="emitColorPick({name: name, value: color[shade], shade: shade})"
+                />
             </div>
         </div>
     </fieldset>
@@ -13,29 +13,30 @@
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
+<script setup lang="ts">
+    import { defineEmits } from "vue";
+    import { ColorData, colors } from "@/context/Color";
+
+    const emit = defineEmits([ "colorPick" ]);
+    const emitColorPick = (color: ColorData) => { emit("colorPick", color); };
+</script>
+
 <script lang="ts">
     import { Icon } from "@iconify/vue";
     import { defineComponent } from "vue";
 
-    import { ColorData, colors } from "@/context/Color";
-
-    const PopupColorPicker = defineComponent({
+    export default defineComponent({
+        name: "PopupColorPicker",
         components: { Icon },
-        emits: [ "colorPicked" ],
-        setup: (props, { emit }) => {
-            const colorPicked = (color: ColorData) => { emit("colorPicked", color); };
-            return { colors, colorPicked };
-        },
     });
-    export default PopupColorPicker;
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped lang="scss">
-@import "@/assets/css.scss";
+@import "@/assets/vars.scss";
 
-#picker {
+fieldset {
     @extend %box-shadow;
     background-color: $bg-color-5;
     border-radius: 4px;
@@ -49,9 +50,10 @@
         display: flex;
         gap: 2px;
 
-        > div {
-            max-height: 17px;
-            svg { width: 16px; height: 16px; }
+        svg {
+            @extend %drop-shadow;
+            width: 16px;
+            height: 16px;
         }
     }
 }

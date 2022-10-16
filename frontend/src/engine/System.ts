@@ -1,21 +1,28 @@
 import { Pulse } from "@/context/Pulse";
-import { DrawGroup, Particle } from "@/engine/Driver";
-import { randIntExc, random } from "@/util";
+import { DrawGroup } from "@/engine/Driver";
+import { Jitter } from "@/model";
+import { random } from "@/util";
+
+export type Particle = {
+    x: number
+    y: number
+    vx: number
+    vy: number
+}
 
 export type Variables = {
     groupA: DrawGroup,
     groupB: DrawGroup,
     pulse: Pulse,
-    gravity: number,
+    attraction: number,
     distance: number,
-    excitation: number,
-    attenuation: number
+    jitter: Jitter
 }
 
-export class Universe {
+export class System {
 
-    private centerX: number;
-    private centerY: number;
+    private readonly centerX: number;
+    private readonly centerY: number;
 
     constructor(
         readonly w: number,
@@ -25,32 +32,22 @@ export class Universe {
         this.centerY = this.h / 2;
     }
 
-    // createParticle(): Particle {
-    //     return {
-    //         x: randIntExc(0, this.w),
-    //         y: randIntExc(0, this.h),
-    //         vx: 0,
-    //         vy: 0,
-    //     };
-    // }
-
     createParticle(): Particle {
         const r = (this.centerX - 50) * Math.sqrt(random());
         const t = random() * 2 * Math.PI;
-
         return {
             x: this.centerX + r * Math.cos(t),
             y: this.centerY + r * Math.sin(t),
             vx: 0,
-            vy: 0,
+            vy: 0
         };
     }
 
     calculate(v: Variables): void {
         const particlesA = v.groupA.particles;
         const particlesB = v.groupB.particles;
-        const excitation = (v.excitation / 100) ** 2;
-        const attenuation = 1 - (v.attenuation / 100);
+        const excitation = (v.jitter.excitation / 100) ** 2;
+        const attenuation = 1 - (v.jitter.attenuation / 100);
 
         for (let i = 0; i < particlesA.length; i++) {
             const pA = particlesA[i];
@@ -63,8 +60,8 @@ export class Universe {
                 const dy = pA.y - pB.y;
                 const r = Math.sqrt(dx * dx + dy * dy);
 
-                if (r > 0 && r <= v.distance) {
-                    const f = v.gravity / r;
+                if (r >= 1 && r <= v.distance) {
+                    const f = v.attraction / r;
                     fx += f * dx * excitation;
                     fy += f * dy * excitation;
                 }
@@ -82,11 +79,10 @@ export class Universe {
             }
 
             // @formatter:off
-            const bounce = -1;
-            if (pA.x < 0)       { pA.vx *= bounce; pA.x = -pA.x; }
-            if (pA.x >= this.w) { pA.vx *= bounce; pA.x = 2 * this.w - pA.x; }
-            if (pA.y < 0)       { pA.vy *= bounce; pA.y = -pA.y; }
-            if (pA.y >= this.h) { pA.vy *= bounce; pA.y = 2 * this.h - pA.y; }
+            if (pA.x <= 0)      { pA.vx *= -1; pA.x = -pA.x; }
+            if (pA.x >= this.w) { pA.vx *= -1; pA.x = 2 * this.w - pA.x; }
+            if (pA.y <= 0)      { pA.vy *= -1; pA.y = -pA.y; }
+            if (pA.y >= this.h) { pA.vy *= -1; pA.y = 2 * this.h - pA.y; }
             // @formatter:on
 
             pA.vx = (pA.vx + fx) * attenuation;
@@ -97,3 +93,5 @@ export class Universe {
         }
     }
 }
+
+const x = 0;

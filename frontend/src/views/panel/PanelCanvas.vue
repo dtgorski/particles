@@ -1,19 +1,17 @@
 <template>
     <div>
-        <canvas id="particle-canvas" :width=aspect.w :height=aspect.h @click=click></canvas>
+        <canvas id="panel-canvas" :width=model.aspect.w :height=model.aspect.h @click=click></canvas>
     </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-    import { defineComponent } from "vue";
-
-    import { PulseCtx } from "@/context/Pulse";
+<script setup lang="ts">
+    import { Pulse, PulseCtx } from "@/context/Pulse";
     import { model } from "@/model";
 
     const canvasAndCtx = (): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } => {
-        const canvas = document.getElementById("particle-canvas") as HTMLCanvasElement;
+        const canvas = document.getElementById("panel-canvas") as HTMLCanvasElement;
         if (!canvas) { throw new Error("canvas not available"); }
 
         const ctx = canvas.getContext("2d");
@@ -22,37 +20,36 @@
         return { canvas, ctx };
     };
 
-    const PanelCanvas = defineComponent({
-        methods: {
-            click: (e: PointerEvent) => {
-                if (!model.running) { return; }
+    const click = (e: PointerEvent) => {
+        if (!model.running) { return; }
 
-                const { canvas } = canvasAndCtx();
-                const rect = canvas.getBoundingClientRect();
+        const { canvas } = canvasAndCtx();
+        const rect = canvas.getBoundingClientRect();
 
-                model.pulse = PulseCtx.createPulse(
-                    (e.clientX - rect.left) * (canvas.width / rect.width),
-                    (e.clientY - rect.top) * (canvas.height / rect.height),
-                    30
-                );
-            },
-        },
-        setup: () => { return model; },
-    });
+        model.pulse = new Pulse(
+            (e.clientX - rect.left) * (canvas.width / rect.width),
+            (e.clientY - rect.top) * (canvas.height / rect.height),
+            30
+        );
+    };
+</script>
 
-    export default PanelCanvas;
+<script lang="ts">
+    import { defineComponent } from "vue";
+
+    export default defineComponent({ name: "PanelCanvas" });
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped lang="scss">
-@import "@/assets/css.scss";
+@import "@/assets/vars.scss";
 
 div {
     border-radius: $border-radius;
     border: 1px solid $bg-color-3;
 
-    #particle-canvas {
+    #panel-canvas {
         background-color: $bg-color-0;
         border-radius: 4px;
         height: 100%;

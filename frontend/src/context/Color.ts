@@ -25,7 +25,7 @@ export type ColorData = {
 
 export const ColorCtx = {
 
-    createRandom: (): ColorData => {
+    createRandomColor: (): ColorData => {
         const names = Object.keys(colors);
 
         const name = names[randIntExc(0, names.length)];
